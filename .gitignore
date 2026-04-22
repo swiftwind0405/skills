@@ -2,6 +2,16 @@
 .DS_Store
 .AppleDouble
 .LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.apdisk
+.com.apple.timemachine.donotpresent
+Icon?
+._*
 
 # Editors
 .vscode/
@@ -16,6 +26,12 @@ __pycache__/
 .python-version
 .venv/
 venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage/
+htmlcov/
 
 # Node / tooling
 node_modules/
@@ -27,9 +43,14 @@ node_modules/
 *.bak
 *.orig
 *.rej
+*.pid
+*.pid.lock
 .cache/
 .tmp/
 tmp/
+artifacts/
+output/
+outputs/
 
 # Secrets / local config
 .env
