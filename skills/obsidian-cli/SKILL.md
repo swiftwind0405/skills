@@ -36,38 +36,38 @@ obsidian create vault="ObsidianDoc" name="My Note" path="00 Inbox/My Note.md" si
 
 ### Folder map
 
-| Folder | Purpose | When to use |
-|---|---|---|
-| **`00 Inbox`** | Default drop zone for all new notes. | Any new note that doesn't clearly belong elsewhere. Quick captures, drafts, unprocessed ideas. |
-| **`10 Project`** | Active, time-bound projects with clear goals. | Notes tied to a specific project (e.g. `Hermes`, `claude-code-study`). Create a subfolder per project. |
-| **`20 Area`** | Long-term areas of responsibility / knowledge domains. | Ongoing knowledge that is neither a project nor a reference. Has many sub-areas (see below). |
-| **`30 Resource`** | Reference material, reading notes, topic deep-dives. | Book notes (`微信读书/`, `读书笔记/`), topic compilations (`专题笔记/`), curated collections (`Flomo/`). |
-| **`40 Archive`** | Completed or paused projects and notes. | Notes/projects that are no longer active. |
-| **`Templates`** | Note templates. | Never place regular notes here. Only templates. |
-| **`Attachments`** | Images and file attachments. | Binary files, images referenced by notes. |
-| **`Excalidraw`** | Excalidraw drawings. | `.excalidraw` files only. |
+| Folder            | Purpose                                                | When to use                                                                                              |
+| ----------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| **`00 Inbox`**    | Default drop zone for all new notes.                   | Any new note that doesn't clearly belong elsewhere. Quick captures, drafts, unprocessed ideas.           |
+| **`10 Project`**  | Active, time-bound projects with clear goals.          | Notes tied to a specific project (e.g. `Hermes`, `claude-code-study`). Create a subfolder per project.   |
+| **`20 Area`**     | Long-term areas of responsibility / knowledge domains. | Ongoing knowledge that is neither a project nor a reference. Has many sub-areas (see below).             |
+| **`30 Resource`** | Reference material, reading notes, topic deep-dives.   | Book notes (`微信读书/`, `读书笔记/`), topic compilations (`专题笔记/`), curated collections (`Flomo/`). |
+| **`40 Archive`**  | Completed or paused projects and notes.                | Notes/projects that are no longer active.                                                                |
+| **`Templates`**   | Note templates.                                        | Never place regular notes here. Only templates.                                                          |
+| **`Attachments`** | Images and file attachments.                           | Binary files, images referenced by notes.                                                                |
+| **`Excalidraw`**  | Excalidraw drawings.                                   | `.excalidraw` files only.                                                                                |
 
 ### `20 Area` sub-areas (knowledge domains)
 
-| Sub-folder | Topics |
-|---|---|
-| `20 Area/AI` | AI/LLM/Agent/MCP/Prompt/RAG – all AI-related knowledge |
-| `20 Area/11 前端` | Frontend: JavaScript, React, CSS, TypeScript, Node.js, browser, performance, state management |
-| `20 Area/12 算法和数据结构` | Algorithms & data structures |
-| `20 Area/15 计算机基础` | CS fundamentals: networking, compilers, OS, CPU |
-| `20 Area/17 容器和虚拟化` | Docker, containers, virtualisation |
-| `20 Area/19 编程` | General programming: Go, Java, Python, C/C++, design patterns, architecture |
-| `20 Area/Work` | Work-related: team standards, code review, interviews, leadership |
-| `20 Area/工具` | Developer tools: Git, Vim, Tmux, Shell, Obsidian, network debugging |
+| Sub-folder                  | Topics                                                                                        |
+| --------------------------- | --------------------------------------------------------------------------------------------- |
+| `20 Area/AI`                | AI/LLM/Agent/MCP/Prompt/RAG – all AI-related knowledge                                        |
+| `20 Area/11 前端`           | Frontend: JavaScript, React, CSS, TypeScript, Node.js, browser, performance, state management |
+| `20 Area/12 算法和数据结构` | Algorithms & data structures                                                                  |
+| `20 Area/15 计算机基础`     | CS fundamentals: networking, compilers, OS, CPU                                               |
+| `20 Area/17 容器和虚拟化`   | Docker, containers, virtualisation                                                            |
+| `20 Area/19 编程`           | General programming: Go, Java, Python, C/C++, design patterns, architecture                   |
+| `20 Area/Work`              | Work-related: team standards, code review, interviews, leadership                             |
+| `20 Area/工具`              | Developer tools: Git, Vim, Tmux, Shell, Obsidian, network debugging                           |
 
 ### `30 Resource` sub-areas
 
-| Sub-folder | Content type |
-|---|---|
+| Sub-folder             | Content type                                                     |
+| ---------------------- | ---------------------------------------------------------------- |
 | `30 Resource/专题笔记` | Topic-based notes & collections (e.g. `Openclaw`, travel guides) |
-| `30 Resource/读书笔记` | Manually written reading notes |
-| `30 Resource/微信读书` | Book highlights exported from WeRead |
-| `30 Resource/Flomo` | Notes imported from Flomo |
+| `30 Resource/读书笔记` | Manually written reading notes                                   |
+| `30 Resource/微信读书` | Book highlights exported from WeRead                             |
+| `30 Resource/Flomo`    | Notes imported from Flomo                                        |
 
 ### Placement decision flowchart
 
@@ -143,6 +143,7 @@ obsidian vault="ObsidianDoc" backlinks file="My Note"
 ```
 
 > **Tip**: If you know the topic domain, you can use `read` with the known path directly instead of searching:
+>
 > ```bash
 > obsidian vault="ObsidianDoc" read path="20 Area/AI/AI Agent Study.md"
 > ```

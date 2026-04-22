@@ -1,115 +1,81 @@
-# Custom Hermes Skills
+# Agent Skills
 
-This repository is the source of truth for my customized Hermes skills.
+[简体中文](./README.zh.md)
 
-## Managed skills
+This repository maintains a small set of custom Agent Skills for practical local workflows.
 
-- `obsidian-cli`
-- `jenkins-job-trigger`
-- `project-dev-guide`
-- `tdl`
-- `vikunja`
+## How To Use
 
-## How it works
+You can use this repository in two ways:
 
-The actual skill content lives in this repo. Hermes loads the same files through symlinks under:
+1. Add it directly as a skill source with `bunx skills add` or `npx skills add`.
+2. Symlink the local skill folders into `~/.hermes/skills/` with [`scripts/link-skills.sh`](./scripts/link-skills.sh).
 
-```bash
-~/.hermes/skills/
-```
-
-Example:
+Install this repository as a skill source:
 
 ```bash
-~/.hermes/skills/obsidian-cli -> ~/Workspace/main/skills/obsidian-cli
+bunx skills add https://github.com/swiftwind0405/skills
 ```
 
-So edits in this repo take effect immediately for Hermes.
-
-## Daily workflow
-
-### Edit a skill
-
-Edit files directly in this repo, for example:
+or:
 
 ```bash
-~/Workspace/main/skills/obsidian-cli/SKILL.md
+npx skills add https://github.com/swiftwind0405/skills
 ```
 
-### Check status
+## Skills Catalog
+
+The table below lists the skills maintained in this repository.
+
+| Name                                                           | Description                                                                                                     | Bundled Assets            |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| [`jenkins-job-trigger`](./skills/jenkins-job-trigger/SKILL.md) | Trigger Jenkins jobs with API token + CSRF crumb; optionally wait for build result and tail console on failure. | `references/`, `scripts/` |
+| [`obsidian-cli`](./skills/obsidian-cli/SKILL.md)               | Read, create, and manage Obsidian vault notes via the bundled `obsidian` CLI; follows PARA structure.           | None                      |
+| [`project-dev-guide`](./skills/project-dev-guide/SKILL.md)     | Resolve local project aliases to real repo absolute paths before reading or editing code.                       | `references/`             |
+| [`tdl`](./skills/tdl/SKILL.md)                                 | Log in to Telegram and download media (filter by file type, group albums, resume) via `tdl`.                    | `scripts/`                |
+| [`vikunja`](./skills/vikunja/SKILL.md)                         | Manage Vikunja tasks, projects, labels, assignees, reminders via REST API with safe-update pattern.             | `references/`             |
+
+## Repository Layout
+
+Each skill lives in its own folder and follows the Agent Skills specification:
+
+```text
+skills/
+  <skill-name>/
+    SKILL.md
+    references/   # optional supporting docs
+    scripts/      # optional executable helpers
+```
+
+The repository also includes lightweight maintenance tooling:
+
+- [`package.json`](./package.json) for Markdown formatting commands
+- [`.github/workflows/markdown.yml`](./.github/workflows/markdown.yml) for formatting checks
+- [`.github/workflows/markdown-fix.yml`](./.github/workflows/markdown-fix.yml) for manual Markdown autofix
+
+## Development
+
+Install tooling:
 
 ```bash
-cd ~/Workspace/main/skills
-git status
+bun install
 ```
 
-### Commit changes
+Check Markdown formatting:
 
 ```bash
-cd ~/Workspace/main/skills
-git add .
-git commit -m "update hermes skills"
+bun run check:md
 ```
 
-### Sync to another device
-
-1. Clone this repo on the other device.
-2. Recreate the symlinks from `~/.hermes/skills/` to the repo directories.
-3. Run a new Hermes session or `/reset` if needed.
-
-## New device setup
+Format Markdown files:
 
 ```bash
-git clone <your-repo-url> ~/Workspace/main/skills
-cd ~/Workspace/main/skills
-./scripts/link-skills.sh
+bun run format:md
 ```
-
-Then start a new Hermes session, or run `/reset` inside Hermes if it is already running.
-
-### Local private overrides
-
-This repo is public-safe, so runtime-specific values should go into ignored local override files instead of public `SKILL.md` examples.
-
-Current convention:
-
-- `project-dev-guide/references/path-aliases.local.json` — real local project paths
-- `jenkins-job-trigger/references/job-aliases.local.json` — real local Jenkins job aliases
-
-These files are ignored by git via `*.local.json`.
-
-When setting up on a new machine:
-
-1. Copy the corresponding `*.example.json` file if present, or create the `*.local.json` file manually.
-2. Fill in machine-specific paths / aliases.
-3. Restart Hermes or `/reset` so subsequent sessions use the updated skill behavior.
-
-If a skill needs to be both **public** and **runnable locally**, prefer this pattern:
-
-- public examples in `SKILL.md` or non-local reference files
-- real values in ignored `*.local.json`
-- scripts / instructions should prefer local override files first, then fall back to public examples
-
-If you update skills later on that device:
-
-```bash
-cd ~/Workspace/main/skills
-git pull
-./scripts/link-skills.sh
-```
-
-## Recreate symlinks manually
-
-Example pattern:
-
-```bash
-ln -s ~/Workspace/main/skills/obsidian-cli ~/.hermes/skills/obsidian-cli
-```
-
-If a destination already exists, remove or move it first.
 
 ## Notes
 
-- Treat this repo as the single source of truth for customized skills.
-- Avoid keeping editable duplicate copies under `~/.hermes/skills/`.
-- If Hermes doesn't reflect changes, start a new session or use `/reset`.
+- Keep core instructions in each `SKILL.md`.
+- Move larger supporting material into `references/` instead of bloating the main skill file.
+- Keep helper scripts colocated inside the owning skill's `scripts/` directory when possible.
+- Use [`scripts/link-skills.sh`](./scripts/link-skills.sh) when you want the local repository to stay as the source of truth for Hermes symlinks.

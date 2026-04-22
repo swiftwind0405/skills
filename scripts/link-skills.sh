@@ -3,6 +3,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 HERMES_SKILLS_DIR="${HOME}/.hermes/skills"
+SKILLS_ROOT="$REPO_ROOT/skills"
 SKILLS=(
   obsidian-cli
   jenkins-job-trigger
@@ -14,7 +15,7 @@ SKILLS=(
 mkdir -p "$HERMES_SKILLS_DIR"
 
 for skill in "${SKILLS[@]}"; do
-  src="$REPO_ROOT/$skill"
+  src="$SKILLS_ROOT/$skill"
   dst="$HERMES_SKILLS_DIR/$skill"
 
   if [[ ! -d "$src" ]]; then

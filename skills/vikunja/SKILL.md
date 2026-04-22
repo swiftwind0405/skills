@@ -1,34 +1,19 @@
 ---
 name: vikunja
-description: >
-  Interact with a Vikunja task management instance via its REST API. Use this
-  skill whenever the user wants to manage tasks, projects, labels, assignees,
-  or reminders in Vikunja — including creating tasks, listing what's due,
-  marking things done, adding labels, assigning users, or organizing projects.
-  Trigger on phrases like "add a task", "what's due today", "create a project
-  in Vikunja", "assign this to me", "set a reminder", or any mention of
-  Vikunja task management.
-metadata:
-  openclaw:
-    requires:
-      env:
-        - VIKUNJA_BASE_URL
-        - VIKUNJA_API_TOKEN
-    primaryEnv: VIKUNJA_API_TOKEN
-    homepage: https://github.com/seergs/vikunja-skill
+description: Interact with a Vikunja task management instance via its REST API. Use when the user wants to manage tasks, projects, labels, assignees, or reminders in Vikunja — including creating tasks, listing what's due, marking things done, adding labels, assigning users, or organizing projects. Trigger on phrases like "add a task", "what's due today", "create a project in Vikunja", "assign this to me", "set a reminder", or any mention of Vikunja task management.
 ---
 
 # Vikunja Skill
 
-Connects an OpenClaw agent to any Vikunja instance via its REST API (`/api/v1`).
+Connects an agent to any Vikunja instance via its REST API (`/api/v1`).
 Uses an API token for authentication — no session management needed.
 
 ## Configuration (required env vars)
 
-| Variable | Description |
-|---|---|
-| `VIKUNJA_BASE_URL` | Base URL of the instance, e.g. `https://vikunja.example.com` |
-| `VIKUNJA_API_TOKEN` | API token created under Settings → API Tokens |
+| Variable            | Description                                                  |
+| ------------------- | ------------------------------------------------------------ |
+| `VIKUNJA_BASE_URL`  | Base URL of the instance, e.g. `https://vikunja.example.com` |
+| `VIKUNJA_API_TOKEN` | API token created under Settings → API Tokens                |
 
 The agent must confirm both vars are set before making any request.
 If missing, tell the user exactly which var is absent and where to create the token
@@ -37,12 +22,14 @@ If missing, tell the user exactly which var is absent and where to create the to
 ## Important API conventions
 
 > **Vikunja uses non-standard HTTP verbs:**
+>
 > - `PUT` = **create** a new resource
 > - `POST` = **update** an existing resource
 > - `GET` = read / list
 > - `DELETE` = delete
 
 All requests:
+
 - Header: `Authorization: Bearer <VIKUNJA_API_TOKEN>`
 - Header: `Content-Type: application/json`
 - Base: `${VIKUNJA_BASE_URL}/api/v1`
@@ -90,6 +77,7 @@ See `references/endpoints.md` for the full endpoint reference.
 - Reminders are part of the task object — use the task update flow
 
 ### Task Relations
+
 - Create a relation between two tasks (precedes, follows, blocked_by, subtask, etc.)
 - Delete a relation
 - When creating a new task with a known relation, use `related_tasks` inline in the body — no separate call needed
@@ -124,15 +112,15 @@ making any write requests.
 
 Using the user's request and the context collected above, reason about:
 
-| Field | How to infer |
-|---|---|
-| **title** | Clean, imperative phrasing. Extract from the request. |
-| **description** | Only if the task is non-trivial. Write a short summary and, where applicable, a markdown checklist (`- [ ] step`) for action items. |
-| **priority** | Match signal words: "urgent"/"asap"/"critical" → 4-5; "important"/"soon" → 3; "when you can"/"low" → 1; otherwise leave at 0 (none). |
-| **labels** | Match against existing labels by keyword similarity. Never create new labels silently — propose only existing ones. |
-| **due_date** | Parse explicit deadlines/dates in the request ("due Friday", "by end of month"). Convert to UTC ISO-8601. If ambiguous (e.g. "soon"), ask the user rather than guessing. |
-| **start_date** | Set only when the user explicitly mentions a start date or "beginning on X". Do not infer from context alone — if it seems relevant but wasn't stated, ask. |
-| **relations** | Scan existing tasks for titles or IDs mentioned in the request. Infer relation kind: "after X" → `follows`, "before X" → `precedes`, "part of X" → `subtask`, "blocks X" → `blocking`, "related to X" → `related`. |
+| Field           | How to infer                                                                                                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **title**       | Clean, imperative phrasing. Extract from the request.                                                                                                                                                              |
+| **description** | Only if the task is non-trivial. Write a short summary and, where applicable, a markdown checklist (`- [ ] step`) for action items.                                                                                |
+| **priority**    | Match signal words: "urgent"/"asap"/"critical" → 4-5; "important"/"soon" → 3; "when you can"/"low" → 1; otherwise leave at 0 (none).                                                                               |
+| **labels**      | Match against existing labels by keyword similarity. Never create new labels silently — propose only existing ones.                                                                                                |
+| **due_date**    | Parse explicit deadlines/dates in the request ("due Friday", "by end of month"). Convert to UTC ISO-8601. If ambiguous (e.g. "soon"), ask the user rather than guessing.                                           |
+| **start_date**  | Set only when the user explicitly mentions a start date or "beginning on X". Do not infer from context alone — if it seems relevant but wasn't stated, ask.                                                        |
+| **relations**   | Scan existing tasks for titles or IDs mentioned in the request. Infer relation kind: "after X" → `follows`, "before X" → `precedes`, "part of X" → `subtask`, "blocks X" → `blocking`, "related to X" → `related`. |
 
 **Simplicity rule:** If the request is a single, unambiguous action with no
 implied context (e.g. "add a task called 'Buy milk'"), skip enrichment entirely
@@ -167,6 +155,7 @@ Shall I create it as above, or would you like to change anything?
 ```
 
 **Date rules:**
+
 - If the user gives an explicit date → parse and include it, no need to ask.
 - If the user uses vague time language ("soon", "eventually") → ask for a
   concrete date rather than guessing. Do not silently skip if context strongly
@@ -196,24 +185,24 @@ proceed to Step 4.
 
 1. GET /tasks/{id} — fetch current state
 2. Build update body by starting **from the full current object** and overriding
-    only the fields you intend to change
+   only the fields you intend to change
 3. Always preserve these fields from the GET response (even if not changing them):
-    - description
-    - done
-    - done_at
-    - due_date
-    - reminders
-    - repeat_after / repeat_mode
-    - priority
-    - start_date
-    - end_date
-    - assignees
-    - hex_color
-    - percent_done
-    - cover_image_attachment_id
-    - is_favorite
+   - description
+   - done
+   - done_at
+   - due_date
+   - reminders
+   - repeat_after / repeat_mode
+   - priority
+   - start_date
+   - end_date
+   - assignees
+   - hex_color
+   - percent_done
+   - cover_image_attachment_id
+   - is_favorite
 
-    > See: https://github.com/go-vikunja/vikunja/issues/1459
+   > See: https://github.com/go-vikunja/vikunja/issues/1459
 
 4. POST /tasks/{id} with the merged body
 
@@ -256,7 +245,7 @@ ssh vps 'find /data /root /var/lib/docker/volumes/portainer_data/_data/compose -
 
 ### 3. Emergency read-only recovery from SQLite
 
-If Vikunja is down but the user only needs to *read* data, and this is a self-hosted instance you can access, use the SQLite database as a fallback.
+If Vikunja is down but the user only needs to _read_ data, and this is a self-hosted instance you can access, use the SQLite database as a fallback.
 
 Typical path discovered in practice:
 

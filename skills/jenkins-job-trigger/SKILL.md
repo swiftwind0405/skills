@@ -9,9 +9,10 @@ Use the bundled script to trigger a Jenkins job and (optionally) wait for comple
 
 ## What to do
 
-1) Collect inputs (**ask only what’s missing**):
+1. Collect inputs (**ask only what’s missing**):
+
 - **First check environment variables**; if they’re present, do **not** ask the user again.
-- `JENKINS_URL` (e.g. `http://47.111.234.183:8080`)
+- `JENKINS_URL` (e.g. `http://jenkins.example.com:8080`)
 - Job selector: either
   - `--job-path job/<folder>/job/<job>` (recommended)
   - or `--job-name "友好名字"` resolved via `references/job-aliases.local.json` **if present**, otherwise `references/job-aliases.json`
@@ -20,7 +21,8 @@ Use the bundled script to trigger a Jenkins job and (optionally) wait for comple
 - Whether to wait for result (default: wait)
 - On a new machine, if `references/job-aliases.example.json` exists, copy it to `references/job-aliases.local.json` and fill in real aliases before relying on friendly job names
 
-2) Run the script via the `exec` tool.
+2. Run the script via the `exec` tool.
+
 - Pass credentials via environment variables (never write tokens into code or logs).
 - The script already defaults from env / local files:
   - `--jenkins` ← `JENKINS_URL`
@@ -35,7 +37,7 @@ Use the bundled script to trigger a Jenkins job and (optionally) wait for comple
 ### Trigger by job path (wait for result)
 
 ```bash
-python3 ~/.hermes/workspace/skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
+python3 skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
   --jenkins "$JENKINS_URL" \
   --job-path "job/example-folder/job/example-web-build"
 ```
@@ -43,7 +45,7 @@ python3 ~/.hermes/workspace/skills/jenkins-job-trigger/scripts/run_jenkins_job.p
 ### Trigger by friendly job name (wait for result)
 
 ```bash
-python3 ~/.hermes/workspace/skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
+python3 skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
   --jenkins "$JENKINS_URL" \
   --job-name "web-build"
 ```
@@ -51,7 +53,7 @@ python3 ~/.hermes/workspace/skills/jenkins-job-trigger/scripts/run_jenkins_job.p
 ### Trigger + auto-diagnose on failure (print console tail)
 
 ```bash
-python3 ~/.hermes/workspace/skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
+python3 skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
   --job-name "web-build" \
   --console-tail 120
 ```
@@ -59,7 +61,7 @@ python3 ~/.hermes/workspace/skills/jenkins-job-trigger/scripts/run_jenkins_job.p
 ### Trigger with parameters
 
 ```bash
-python3 ~/.hermes/workspace/skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
+python3 skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
   --jenkins "$JENKINS_URL" \
   --job-path "job/example-folder/job/example-web-build" \
   --param branch=main \
@@ -69,7 +71,7 @@ python3 ~/.hermes/workspace/skills/jenkins-job-trigger/scripts/run_jenkins_job.p
 ### Fire-and-forget (do not wait)
 
 ```bash
-python3 ~/.hermes/workspace/skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
+python3 skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
   --jenkins "$JENKINS_URL" \
   --job-path "job/example-folder/job/example-web-build" \
   --no-wait

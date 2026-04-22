@@ -12,6 +12,7 @@ Auth: `Authorization: Bearer ${VIKUNJA_API_TOKEN}`
 ```
 GET /user
 ```
+
 Returns the authenticated user object. Useful to resolve "me" to a user ID
 when adding assignees.
 
@@ -22,6 +23,7 @@ Response fields: `id`, `username`, `email`, `name`
 ## Projects
 
 ### List all projects
+
 ```
 GET /projects?page=1&per_page=50
 ```
@@ -30,15 +32,19 @@ Response: array of project objects.
 Key fields: `id`, `title`, `description`, `identifier`, `is_archived`
 
 ### Get a single project
+
 ```
 GET /projects/{projectID}
 ```
 
 ### Create a project
+
 ```
 PUT /projects
 ```
+
 Body:
+
 ```json
 {
   "title": "My Project",
@@ -46,6 +52,7 @@ Body:
   "color": "#ff0000"
 }
 ```
+
 Response: created project object with `id`.
 
 ---
@@ -53,28 +60,36 @@ Response: created project object with `id`.
 ## Tasks
 
 ### List all tasks (across all projects)
+
 ```
 GET /tasks/all?page=1&per_page=50&sort_by=due_date&order_by=asc
 ```
+
 Optional filter params: `filter=due_date<2025-12-31` (filter DSL).
 Useful sort values: `due_date`, `priority`, `created`, `updated`.
 
 ### List tasks in a project
+
 ```
 GET /projects/{projectID}/tasks?page=1&per_page=50
 ```
 
 ### Get a single task
+
 ```
 GET /tasks/{taskID}
 ```
+
 Returns full task object including labels, assignees, reminders.
 
 ### Create a task
+
 ```
 PUT /projects/{projectID}/tasks
 ```
+
 Body (all fields except `title` are optional):
+
 ```json
 {
   "title": "Task title",
@@ -92,40 +107,47 @@ Body (all fields except `title` are optional):
     }
   ],
   "related_tasks": {
-      "precedes": [{"id": 42}],
-      "blocked_by": [{"id": 7}]
+    "precedes": [{ "id": 42 }],
+    "blocked_by": [{ "id": 7 }]
   }
 }
 ```
+
 Priority scale: `0` = none, `1` = low, `2` = medium, `3` = high, `4` = urgent, `5` = DO NOW.
 
-`related_tasks` is optional. Keys are relation kinds; values are arrays of `{"id": taskID}`. 
+`related_tasks` is optional. Keys are relation kinds; values are arrays of `{"id": taskID}`.
 Relations are created inline in a single request - no separate call needed.
 
 Response: created task object with `id` and `index`.
 
 ### Update a task
+
 ```
 POST /tasks/{taskID}
 ```
+
 Body: same shape as create — only include fields you want to change.
 
 To mark done:
+
 ```json
 { "done": true }
 ```
 
 To update due date:
+
 ```json
 { "due_date": "2025-12-31T23:59:59Z" }
 ```
 
 To update title + priority:
+
 ```json
 { "title": "New title", "priority": 5 }
 ```
 
 ### Delete a task
+
 ```
 DELETE /tasks/{taskID}
 ```
@@ -138,6 +160,7 @@ Reminders live inside the task object. To add/change them, use the task update
 endpoint with a `reminders` array. Each reminder is one of:
 
 **Absolute datetime:**
+
 ```json
 {
   "reminder": "2025-12-31T10:00:00Z"
@@ -145,12 +168,14 @@ endpoint with a `reminders` array. Each reminder is one of:
 ```
 
 **Relative to a task date field:**
+
 ```json
 {
   "relative_to": "due_date",
   "relative_period": -3600
 }
 ```
+
 `relative_period` is in seconds. Negative = before the reference date.
 `relative_to` options: `"due_date"`, `"start_date"`, `"end_date"`
 
@@ -164,16 +189,21 @@ existing `reminders` array, then POST the update.
 ## Labels
 
 ### List all labels
+
 ```
 GET /labels?page=1&per_page=50&s=<search>
 ```
+
 Key fields: `id`, `title`, `hex_color`
 
 ### Create a label
+
 ```
 PUT /labels
 ```
+
 Body:
+
 ```json
 {
   "title": "urgent",
@@ -182,15 +212,19 @@ Body:
 ```
 
 ### Add a label to a task
+
 ```
 PUT /tasks/{taskID}/labels
 ```
+
 Body:
+
 ```json
 { "label_id": 42 }
 ```
 
 ### Remove a label from a task
+
 ```
 DELETE /tasks/{taskID}/labels/{labelID}
 ```
@@ -200,21 +234,27 @@ DELETE /tasks/{taskID}/labels/{labelID}
 ## Assignees
 
 ### List task assignees
+
 ```
 GET /tasks/{taskID}/assignees
 ```
 
 ### Add an assignee
+
 ```
 PUT /tasks/{taskID}/assignees
 ```
+
 Body:
+
 ```json
 { "user_id": 7 }
 ```
+
 To assign the current user: call `GET /user` first to get their `id`.
 
 ### Remove an assignee
+
 ```
 DELETE /tasks/{taskID}/assignees/{userID}
 ```
@@ -224,17 +264,19 @@ DELETE /tasks/{taskID}/assignees/{userID}
 ## Task Relations
 
 ### Create a relation
+
 PUT /tasks/{taskID}/relations
 
 Body:
 {
-  "other_task_id": 456,
-  "relation_kind": "precedes"
+"other_task_id": 456,
+"relation_kind": "precedes"
 }
 
 relation_kind values:
+
 - "precedes" — esta tarea va antes que la otra
-- "follows" — esta tarea va después que la otra  
+- "follows" — esta tarea va después que la otra
 - "related" — relación genérica sin orden
 - "duplicates" / "duplicated_by"
 - "blocked_by" / "blocking"
@@ -245,12 +287,13 @@ relation_kind values:
 Response: objeto con task_id, other_task_id, relation_kind, created_by, created.
 
 ### Delete a relation
-DELETE /tasks/{taskID}/relations/{otherTaskID}/{relationKind}
 
+DELETE /tasks/{taskID}/relations/{otherTaskID}/{relationKind}
 
 ## Error responses
 
 All errors return JSON:
+
 ```json
 {
   "code": 4001,

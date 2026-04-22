@@ -34,8 +34,8 @@ tdl download -u <url> --group
 # Download only images and videos
 tdl download -u <url> -i jpg,jpeg,png,mp4,mov,mkv
 
-# Download to specific directory (use full path, not ~)
-tdl download -u <url> -d ~/Downloads/telegram
+# Download to specific directory (use absolute path, not ~)
+tdl download -u <url> -d /Users/you/Downloads/telegram
 ```
 
 ## Common Operations
@@ -98,6 +98,7 @@ For links from some private channels, convert the format:
 **Convert to:** `https://t.me/<public_chat_id>/{thread_id}?comment={msg_id}`
 
 **Example:**
+
 - Original: `https://t.me/c/1234567890/1052?thread=1030`
 - Converted: `https://t.me/1987654321/1030?comment=1052`
 
