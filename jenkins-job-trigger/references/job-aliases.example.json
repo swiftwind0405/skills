@@ -1,0 +1,6 @@
+{
+  "web-build": "job/example-folder/job/example-web-build",
+  "mobile-build": "job/example-folder/job/example-mobile-build",
+  "ai-service": "job/example-folder/job/example-ai-service",
+  "backend-api": "/job/example-folder/job/example-backend-api"
+}

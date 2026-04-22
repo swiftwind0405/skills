@@ -1,0 +1,60 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+.python-version
+.venv/
+venv/
+
+# Node / tooling
+node_modules/
+
+# Logs and temp
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+.cache/
+.tmp/
+tmp/
+
+# Secrets / local config
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.csr
+*.secrets
+secrets/
+credentials/
+
+# Local skill-specific overrides or generated outputs
+*.local
+*.local.json
+*.local.yaml
+*.local.yml
+*.local.toml
+*.sqlite
+*.db
+*.tgz
+*.zip
+*.tar
+
+# OS / misc
+Thumbs.db
