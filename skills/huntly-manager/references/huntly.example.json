@@ -1,4 +1,5 @@
 {
   "baseUrl": "https://huntly.example.com",
-  "token": "YOUR_JWT_TOKEN"
+  "token": "YOUR_JWT_TOKEN",
+  "sqlitePath": "/path/to/huntly/db.sqlite"
 }

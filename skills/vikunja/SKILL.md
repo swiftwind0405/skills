@@ -19,6 +19,26 @@ The agent must confirm both vars are set before making any request.
 If missing, tell the user exactly which var is absent and where to create the token
 (Settings → API Tokens in the Vikunja web UI).
 
+## Local config
+
+Copy `references/vikunja.example.json` to `references/vikunja.local.json` and fill in real values on the current machine.
+
+Example:
+
+```json
+{
+  "baseUrl": "https://vikunja.example.com",
+  "apiToken": "YOUR_API_TOKEN",
+  "sqlitePath": "/path/to/vikunja/db/vikunja.db"
+}
+```
+
+Check these in order for configuration:
+
+1. Environment variables (`VIKUNJA_BASE_URL`, `VIKUNJA_API_TOKEN`)
+2. `references/vikunja.local.json`
+3. `references/vikunja.example.json` only as a format reference, never as a real credential source
+
 ## Important API conventions
 
 > **Vikunja uses non-standard HTTP verbs:**
@@ -247,31 +267,7 @@ ssh vps 'find /data /root /var/lib/docker/volumes/portainer_data/_data/compose -
 
 If Vikunja is down but the user only needs to _read_ data, and this is a self-hosted instance you can access, use the SQLite database as a fallback.
 
-Typical path discovered in practice:
-
-```bash
-/root/data/docker_data/vikunja/db/vikunja.db
-```
-
-Useful recovery queries:
-
-```sql
-select id, title, is_archived from projects order by id;
-select t.id, t."index", t.title, t.done, t.priority, t.due_date
-from tasks t
-where t.project_id = ?
-order by t.done asc, t."index" asc, t.id asc;
-```
-
-And labels for each task:
-
-```sql
-select l.title
-from labels l
-join label_tasks lt on l.id = lt.label_id
-where lt.task_id = ?
-order by l.title;
-```
+The SQLite database path is stored in `references/vikunja.local.json` under the `sqlitePath` key. See [references/vikunja-data-model.md](references/vikunja-data-model.md) for the full schema and useful queries.
 
 **Important:** this fallback is read-only. Do not write directly to the database unless the user explicitly asks for DB-level repair and you have confirmed backups/scope.
 
@@ -309,3 +305,11 @@ When the user asks for a project by name and an exact API/DB match fails, also c
   like "review" or "planning" exist, suggest them. Present proposal.
 
 Read `references/endpoints.md` for exact request/response shapes.
+
+## Data model reference
+
+See [references/vikunja-data-model.md](references/vikunja-data-model.md) for the full Vikunja SQLite schema including `projects`, `tasks`, `labels`, `label_tasks`, `task_assignees`, `task_relations`, `task_reminders`, and `users` tables. Use this as a reference when constructing direct SQL queries or interpreting API results.
+
+## Local database
+
+The SQLite database path is stored in `references/vikunja.local.json` under the `sqlitePath` key. Use this for direct SQLite queries when the Vikunja service is unavailable, or when ad-hoc SQL is more convenient than the API (e.g. complex joins, bulk analysis).

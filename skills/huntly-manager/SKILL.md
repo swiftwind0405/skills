@@ -96,7 +96,8 @@ Example:
 ```json
 {
   "baseUrl": "https://huntly.example.com",
-  "token": "YOUR_JWT_TOKEN"
+  "token": "YOUR_JWT_TOKEN",
+  "sqlitePath": "/path/to/huntly/db.sqlite"
 }
 ```
 
@@ -106,7 +107,8 @@ or:
 {
   "baseUrl": "https://huntly.example.com",
   "username": "your-username",
-  "password": "your-password"
+  "password": "your-password",
+  "sqlitePath": "/path/to/huntly/db.sqlite"
 }
 ```
 
@@ -376,3 +378,11 @@ python3 skills/huntly-manager/scripts/huntly_collections.py update-group --group
 - `collections/tree` returns groups with nested collections; group names and collection names should not be conflated.
 - The backend enforces duplicate group-name checks, but collection duplicate prevention is mainly a client-side convention, so prefer querying first or using `--ensure-unique`.
 - Prefer API auth over browser-cookie reuse in skills.
+
+## Data model reference
+
+See [references/huntly-data-model.md](references/huntly-data-model.md) for the full Huntly SQLite schema including the `page` table, `page_json_properties` JSON structure (tweets, GitHub repos), and related tables (`page_highlight`, `connector`, `collection`, `folder`). Use this as a reference when constructing direct SQL queries or interpreting MCP/REST results.
+
+## Local database
+
+The SQLite database path is stored in `references/huntly.local.json` under the `sqlitePath` key. Use this for direct SQLite queries when the Huntly service or MCP is unavailable, or when ad-hoc SQL is more convenient than the API (e.g. complex joins, bulk analysis).
