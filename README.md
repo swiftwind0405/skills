@@ -29,6 +29,7 @@ The table below lists the skills maintained in this repository.
 
 | Name                                                           | Description                                                                                                     | Bundled Assets            |
 | -------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| [`huntly-manager`](./skills/huntly-manager/SKILL.md)   | Use Huntly in mixed mode: read via MCP, and save content or manage collections/groups via REST API scripts.      | `references/`, `scripts/` |
 | [`jenkins-job-trigger`](./skills/jenkins-job-trigger/SKILL.md) | Trigger Jenkins jobs with API token + CSRF crumb; optionally wait for build result and tail console on failure. | `references/`, `scripts/` |
 | [`obsidian-cli`](./skills/obsidian-cli/SKILL.md)               | Read, create, and manage Obsidian vault notes via the bundled `obsidian` CLI; follows PARA structure.           | None                      |
 | [`project-dev-guide`](./skills/project-dev-guide/SKILL.md)     | Resolve local project aliases to real repo absolute paths before reading or editing code.                       | `references/`             |

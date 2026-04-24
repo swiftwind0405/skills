@@ -27,13 +27,14 @@ npx skills add https://github.com/swiftwind0405/skills
 
 下表列出了当前仓库维护的技能。
 
-| Name                                                           | Description                                                                                  | Bundled Assets            |
-| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------- |
-| [`jenkins-job-trigger`](./skills/jenkins-job-trigger/SKILL.md) | 通过 API Token + CSRF crumb 触发 Jenkins 构建，可等待结果，失败时自动拉取 console 尾部日志。 | `references/`, `scripts/` |
-| [`obsidian-cli`](./skills/obsidian-cli/SKILL.md)               | 通过自带的 `obsidian` CLI 读写与管理 Obsidian 笔记，遵循 PARA 目录结构。                     | None                      |
-| [`project-dev-guide`](./skills/project-dev-guide/SKILL.md)     | 读代码或改代码前，先把项目别名解析到本机真实仓库绝对路径。                                   | `references/`             |
-| [`tdl`](./skills/tdl/SKILL.md)                                 | 登录 Telegram 并通过 `tdl` 下载媒体（按类型过滤、下载相册组、断点续传）。                    | `scripts/`                |
-| [`vikunja`](./skills/vikunja/SKILL.md)                         | 通过 REST API 管理 Vikunja 任务、项目、标签、指派人、提醒，遵循安全更新模式。                | `references/`             |
+| Name                                                           | Description                                                                                          | Bundled Assets            |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------- |
+| [`huntly-manager`](./skills/huntly-manager/SKILL.md)   | 以混合模式使用 Huntly：读操作走 MCP，写入内容与 collection/group 管理走 REST API 脚本。            | `references/`, `scripts/` |
+| [`jenkins-job-trigger`](./skills/jenkins-job-trigger/SKILL.md) | 通过 API Token + CSRF crumb 触发 Jenkins 构建，可等待结果，失败时自动拉取 console 尾部日志。         | `references/`, `scripts/` |
+| [`obsidian-cli`](./skills/obsidian-cli/SKILL.md)               | 通过自带的 `obsidian` CLI 读写与管理 Obsidian 笔记，遵循 PARA 目录结构。                             | None                      |
+| [`project-dev-guide`](./skills/project-dev-guide/SKILL.md)     | 读代码或改代码前，先把项目别名解析到本机真实仓库绝对路径。                                           | `references/`             |
+| [`tdl`](./skills/tdl/SKILL.md)                                 | 登录 Telegram 并通过 `tdl` 下载媒体（按类型过滤、下载相册组、断点续传）。                            | `scripts/`                |
+| [`vikunja`](./skills/vikunja/SKILL.md)                         | 通过 REST API 管理 Vikunja 任务、项目、标签、指派人、提醒，遵循安全更新模式。                        | `references/`             |
 
 ## 仓库结构
 

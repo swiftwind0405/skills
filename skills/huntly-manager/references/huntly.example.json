@@ -1,0 +1,4 @@
+{
+  "baseUrl": "https://huntly.example.com",
+  "token": "YOUR_JWT_TOKEN"
+}
