@@ -71,6 +71,21 @@ If none found, use defaults.
 ${BUN_X} {baseDir}/scripts/main.ts <markdown_file> --theme <theme> [--cite]
 ```
 
+**Frontmatter pitfall**: If conversion logs `Error parsing front-matter` and the generated HTML shows YAML metadata as the visible first heading/title, create a body-only temporary Markdown file by stripping the leading `--- ... ---` block, then rerun conversion with an explicit `--title "..."`. This avoids bad imports when downstream systems (e.g. Huntly) ingest the HTML content.
+
+Example:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+p = Path('article.md')
+s = p.read_text(encoding='utf-8')
+body = s.split('---', 2)[2].lstrip('\n') if s.startswith('---') else s
+Path('article-body.md').write_text(body, encoding='utf-8')
+PY
+${BUN_X} {baseDir}/scripts/main.ts article-body.md --theme modern --color blue --keep-title --title "Article Title"
+```
+
 ### Step 3: Report Result
 
 Display the output path from JSON result. If backup was created, mention it.

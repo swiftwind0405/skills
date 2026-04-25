@@ -24,10 +24,14 @@ Concrete `AskUserQuestion` references below are examples — substitute the loca
 **Agent Execution Instructions**:
 
 1. Determine this SKILL.md file's directory path as `{baseDir}`
-2. Resolve `${BUN}` runtime: if `bun` installed → `bun`; else suggest installing Bun
-3. If `{baseDir}/scripts/node_modules` does not exist, run `${BUN} install --cwd {baseDir}/scripts`
-4. `${READER}` = `{baseDir}/scripts/baoyu-fetch`
-5. Replace all `${READER}` in this document with the resolved value
+2. Resolve `${BUN_X}` runtime: if `bun` installed → `bun`; if `npx` available → `npx -y bun`; else suggest installing Bun
+3. If `{baseDir}/scripts/node_modules` does not exist, run `${BUN_X} install --cwd {baseDir}/scripts`
+4. Resolve `${READER}`:
+   - if `${BUN_X}` is exactly `bun`, use the shell wrapper: `{baseDir}/scripts/baoyu-fetch`
+   - if `${BUN_X}` is `npx -y bun`, **do not** execute the shell wrapper through Bun; call the TypeScript entrypoint directly: `npx -y bun {baseDir}/scripts/lib/cli.ts`
+5. Replace all `${READER}` in this document with the resolved command
+
+**Pitfall**: Running `npx -y bun {baseDir}/scripts/baoyu-fetch ...` makes Bun parse the shell wrapper as JavaScript and fails with syntax errors around `script_dir=$(...)`. Use `{baseDir}/scripts/baoyu-fetch ...` only when a real `bun` binary is on `PATH`; otherwise use `npx -y bun {baseDir}/scripts/lib/cli.ts ...`.
 
 ## Preferences (EXTEND.md)
 

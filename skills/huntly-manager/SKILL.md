@@ -260,7 +260,10 @@ When referencing saved Huntly content back to the user, prefer `huntlyUrl` when 
 1. If the user gives only a URL, first extract the page content with Hermes tools.
 2. Prefer sending cleaned content HTML to Huntly.
 3. Run `huntly_save_content.py`.
-4. Report back the created `page_id`, save mode, and collection assignment if any.
+4. Verify the write when possible:
+   - If `references/huntly.local.json` has `sqlitePath`, query the page by returned `page_id` and confirm `title`, `url`, `library_save_status`, and non-empty `content` length.
+   - Example: `sqlite3 "$sqlitePath" "select id,title,url,library_save_status,length(content) from page where id=<page_id>;"`
+5. Report back the created `page_id`, save mode, collection assignment if any, and verification result.
 
 ### B. Query collection info
 
