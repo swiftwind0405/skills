@@ -1,6 +1,6 @@
 ---
 name: url-translate-huntly-save
-description: Convert a URL to Markdown, translate it, render translated Markdown to HTML, and save/import the translated HTML into Huntly. Use when the user says they want to translate a URL/article/page/post and collect/save/bookmark/import it into Huntly or their reading library.
+description: Convert a URL to Markdown, produce bilingual original/Chinese Markdown in a side-by-side vertical format, render it to HTML, and save/import the translated HTML into Huntly. Use when the user says they want to translate a URL/article/page/post and collect/save/bookmark it; for this user, bare “翻译并收藏” defaults to Huntly.
 ---
 
 # URL → Translate → HTML → Huntly
@@ -10,6 +10,7 @@ Use this workflow when the user's intent is: **translate a URL and save/collect/
 Typical triggers:
 
 - “把这个 URL 翻译一下然后收藏”
+- “翻译并收藏 / translate and save/bookmark this URL”（本用户默认保存到 Huntly）
 - “翻译这个链接并导入 Huntly”
 - “转成 Markdown、翻译、转 HTML、放到 Huntly”
 - “save this translated article to Huntly”
@@ -26,9 +27,10 @@ Load and follow these skills first:
 ## Default assumptions
 
 - Target language: Chinese (`zh-CN`) unless the user specifies otherwise.
+- Output form: **bilingual original + Chinese translation**, using vertical comparison (“上下对照”), not translation-only.
 - Translation mode: `normal` unless the user asks for quick/精翻/refined.
 - Huntly save mode: `my-list` unless the user specifies Archive/collection.
-- Use cleaned translated HTML as Huntly `content`, not raw Markdown.
+- Use cleaned bilingual HTML as Huntly `content`, not raw Markdown.
 - Preserve the original source URL as the Huntly URL.
 - Preserve source metadata where available: title, author, site name, published date, cover image.
 
@@ -72,25 +74,68 @@ Quality gate:
 - Ensure it contains the actual article/post content, not a login page, error page, or empty scaffold.
 - If extraction is low quality, retry with `--wait-for interaction` or use a browser-authenticated workflow per `url-to-markdown`.
 
-### 3. Translate Markdown
+### 3. Produce bilingual Markdown
 
-Use `articles-translates` rules.
+Use `articles-translates` rules, but **override the final output format**: this workflow must produce a bilingual original/Chinese Markdown document, not translation-only Markdown.
 
 For short/medium articles, produce:
 
 - `01-analysis.md`
 - `02-prompt.md`
-- `translation.md`
+- `translation.md` — bilingual vertical comparison Markdown
 
-For long articles, follow the chunking/subagent workflow from `articles-translates`.
+For long articles, follow the chunking/subagent workflow from `articles-translates`, but each chunk must preserve source blocks and append Chinese translations block-by-block.
 
-Translation requirements:
+Practical long-X-article shortcut:
 
-- Translate into natural target-language prose, not literal word-by-word output.
-- Preserve Markdown structure, links, images, code blocks, and factual meaning.
+- If `source.md` is medium/long but still a single coherent X article/thread, a single `delegate_task` with `file`/`terminal` toolsets can efficiently produce `01-analysis.md`, `02-prompt.md`, and `translation.md` in the same workspace without flooding the main context.
+- The subagent prompt must be explicit that the output is **bilingual vertical comparison**, not translation-only, and that it must not render HTML or save to Huntly.
+- After the subagent returns, verify `translation.md` before rendering: check that the original title/major headings remain, Chinese translations appear as blockquotes immediately after them, frontmatter is clean, and the file is substantially larger than the source. Fix formatting issues before HTML conversion.
+
+Bilingual output requirements:
+
+1. Preserve the original Markdown hierarchy and structure, including headings, lists, blockquotes, code blocks, tables, links, images, footnotes, alerts, and other Markdown constructs.
+2. For every translatable heading, paragraph, blockquote line, and list item, show the original first, then the Chinese translation immediately after it.
+3. Use vertical comparison (“上下对照”) format:
+
+   ```markdown
+   ## Original heading
+
+   > 中文标题
+
+   Original paragraph.
+
+   > 中文译文段落。
+
+   - Original list item
+     > 中文列表项
+   ```
+
+4. Do **not** translate code block contents. Keep fenced code blocks exactly as source, including language labels and indentation. Translate only prose before/after the code block.
+5. Do not translate URLs, image URLs, file paths, commands, variable names, function names, API names, package names, model names, or identifiers.
+6. For proper nouns and technical terms, keep the English term when useful; on first occurrence, optionally add a Chinese explanation, e.g. `middleware（中间件）`.
+7. Output must remain valid Markdown.
+8. Preserve source layout as much as possible. Do not restructure, summarize, omit, merge, or delete content.
+9. Translation style: accurate, natural, and suitable for technical-document reading.
+
+Markdown element handling:
+
+- **Headings**: keep the original heading as the actual heading; put the Chinese heading as a blockquote immediately below.
+- **Paragraphs**: keep original paragraph, blank line, then Chinese translation as a blockquote.
+- **Lists**: keep each original list item; place a nested blockquote translation directly under that same item. Preserve nesting.
+- **Blockquotes**: preserve original blockquote syntax and add translated blockquote content immediately after, using a clear nested/adjacent quote while keeping valid Markdown.
+- **Tables**: preserve table structure where possible. Prefer adding “原文 / 译文” inside each relevant cell, or if the table becomes unreadable, duplicate the table as original table followed by translated table with the same columns.
+- **Images**: keep original image Markdown unchanged. If an image has alt text, add a translated alt-text note below only if useful; never rewrite the image URL.
+- **Links**: translate visible link text when it is prose, but keep the URL unchanged.
+- **Footnotes**: preserve footnote IDs and links; add translations next to the footnote text without changing references.
+- **HTML blocks**: preserve raw HTML unless it contains visible prose that can be safely translated without breaking markup.
+
+Frontmatter handling:
+
 - Preserve or transform YAML frontmatter carefully:
   - source metadata fields should be renamed to `source*` where appropriate;
-  - translated title/summary should be added as top-level translated metadata.
+  - translated title/summary may be added as top-level translated metadata;
+  - the body must still contain bilingual title/content in the vertical comparison format.
 
 ### 4. Render translated Markdown to HTML
 
@@ -122,7 +167,7 @@ npx -y bun /Users/stanley/Workspace/main/skills/skills/markdown-to-html/scripts/
   --theme modern \
   --color blue \
   --keep-title \
-  --title '<TRANSLATED_TITLE>'
+  --title '<ORIGINAL_TITLE> / <TRANSLATED_TITLE>'
 ```
 
 Expected output:
@@ -133,9 +178,10 @@ Expected output:
 
 Verify the HTML:
 
-- `<title>` is the translated title, not raw frontmatter.
-- The body starts with the translated article, not YAML metadata.
-- Images/code blocks are present where expected.
+- `<title>` is a clean title (prefer `<original title> / <Chinese title>`), not raw frontmatter.
+- The body starts with the bilingual article, not YAML metadata.
+- Original text appears before Chinese blockquote translations throughout.
+- Images/code blocks are present where expected; code block contents remain unchanged.
 
 ### 5. Save/import translated HTML into Huntly
 
@@ -144,8 +190,8 @@ Use the `huntly-manager` script for writes:
 ```bash
 python3 /Users/stanley/Workspace/main/skills/skills/huntly-manager/scripts/huntly_save_content.py \
   --url '<ORIGINAL_CANONICAL_URL>' \
-  --title '<TRANSLATED_TITLE>' \
-  --description '<TRANSLATED_SUMMARY_OR_SHORT_DESCRIPTION>' \
+  --title '<ORIGINAL_TITLE> / <TRANSLATED_TITLE>' \
+  --description '<BILINGUAL_OR_TRANSLATED_SUMMARY_SHORT_DESCRIPTION>' \
   --author '<AUTHOR_IF_AVAILABLE>' \
   --site-name '<SITE_NAME_IF_AVAILABLE>' \
   --content-file /tmp/huntly_url_translate_import/translation-body.html \
@@ -180,10 +226,11 @@ sqlite3 '<sqlitePath>' "select id,title,url,library_save_status,length(content) 
 
 Expected:
 
-- title matches translated title;
+- title is clean and preferably bilingual (`<original title> / <Chinese title>`);
 - URL is the original source URL;
 - `library_save_status = 1` for My List;
-- `length(content)` is non-trivial.
+- `length(content)` is non-trivial;
+- content contains both original language and Chinese translations.
 
 ## Final response format
 
@@ -191,9 +238,9 @@ Report concise completion details:
 
 ```text
 已完成：
-- Markdown: <source.md>
-- 中文 Markdown: <translation.md>
-- HTML: <translation-body.html>
+- 原文 Markdown: <source.md>
+- 双语 Markdown: <translation.md>
+- 双语 HTML: <translation-body.html>
 - Huntly page_id: <id>
 - 保存位置: My List / Archive / collection <name>
 ```
@@ -201,13 +248,14 @@ Report concise completion details:
 If images likely contain source-language text, add:
 
 ```text
-注意：正文已翻译，原文配图中的文字可能仍是源语言。
+注意：正文已按原文/中文上下对照输出；原文配图中的文字可能仍是源语言。
 ```
 
 ## Common gotchas
 
 - `url-to-markdown/scripts/baoyu-fetch` may fail when only `npx` is available because the wrapper runs `exec bun ...`; call `scripts/lib/cli.ts` through `npx -y bun` instead.
 - Do not ask about Huntly if the user clearly says “收藏/导入 Huntly”; proceed with default `my-list`.
+- Do not produce translation-only Markdown for this workflow; the default required output is bilingual vertical comparison.
 - Do not use Huntly browser UI for writes; use `huntly_save_content.py`.
 - For Huntly reads, prefer MCP when native Huntly MCP tools are available; for writes/imports, use REST script.
 - Strip frontmatter before HTML rendering if the renderer pollutes output with YAML metadata.

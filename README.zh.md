@@ -38,7 +38,7 @@ npx skills add https://github.com/swiftwind0405/skills
 | [`project-dev-guide`](./skills/project-dev-guide/SKILL.md)                 | 读代码或改代码前，先把项目别名解析到本机真实仓库绝对路径。                                         | `references/`             |
 | [`tdl`](./skills/tdl/SKILL.md)                                             | 登录 Telegram 并通过 `tdl` 下载媒体（按类型过滤、下载相册组、断点续传）。                          | `scripts/`                |
 | [`url-to-markdown`](./skills/url-to-markdown/SKILL.md)                     | 通过 Chrome CDP 抓取任意 URL 并转为 Markdown，内置 X/Twitter、YouTube、Hacker News 等适配器。      | `references/`, `scripts/` |
-| [`url-translate-huntly-save`](./skills/url-translate-huntly-save/SKILL.md) | 将 URL 转 Markdown、翻译、渲染 HTML，并把翻译后的内容导入 Huntly。                                 | None                      |
+| [`url-translate-huntly-save`](./skills/url-translate-huntly-save/SKILL.md) | 将 URL 转 Markdown，输出原文/中文上下对照双语 Markdown，渲染 HTML，并导入 Huntly。                 | None                      |
 | [`vikunja`](./skills/vikunja/SKILL.md)                                     | 通过 REST API 管理 Vikunja 任务、项目、标签、指派人、提醒，遵循安全更新模式。                      | `references/`             |
 
 ## 仓库结构

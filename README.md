@@ -38,7 +38,7 @@ The table below lists the skills maintained in this repository.
 | [`project-dev-guide`](./skills/project-dev-guide/SKILL.md)                 | Resolve local project aliases to real repo absolute paths before reading or editing code.                                                               | `references/`             |
 | [`tdl`](./skills/tdl/SKILL.md)                                             | Log in to Telegram and download media (filter by file type, group albums, resume) via `tdl`.                                                            | `scripts/`                |
 | [`url-to-markdown`](./skills/url-to-markdown/SKILL.md)                     | Fetch any URL and convert to markdown via Chrome CDP with adapters for X/Twitter, YouTube, Hacker News, and generic pages.                              | `references/`, `scripts/` |
-| [`url-translate-huntly-save`](./skills/url-translate-huntly-save/SKILL.md) | Convert a URL to Markdown, translate it, render HTML, and import the translated content into Huntly.                                                    | None                      |
+| [`url-translate-huntly-save`](./skills/url-translate-huntly-save/SKILL.md) | Convert a URL to Markdown, produce bilingual original/Chinese Markdown, render HTML, and import it into Huntly.                                         | None                      |
 | [`vikunja`](./skills/vikunja/SKILL.md)                                     | Manage Vikunja tasks, projects, labels, assignees, reminders via REST API with safe-update pattern.                                                     | `references/`             |
 
 ## Repository Layout
