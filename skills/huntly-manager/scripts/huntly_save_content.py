@@ -12,24 +12,6 @@ from urllib.request import Request, urlopen
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_DIR = SCRIPT_DIR.parent
-LOCAL_CONFIG_PATH = SKILL_DIR / "references" / "huntly.local.json"
-
-
-def load_local_config() -> Dict[str, Any]:
-    if not LOCAL_CONFIG_PATH.exists():
-        return {}
-    return json.loads(LOCAL_CONFIG_PATH.read_text(encoding="utf-8"))
-
-
-def env_or_config(env_name: str, config: Dict[str, Any], *keys: str) -> Optional[str]:
-    value = os.getenv(env_name)
-    if value:
-        return value
-    for key in keys:
-        value = config.get(key)
-        if value:
-            return value
-    return None
 
 
 def normalize_base_url(base_url: str) -> str:
@@ -98,7 +80,7 @@ def auth_headers(base_url: str, token: Optional[str], username: Optional[str], p
         return {"Authorization": f"Bearer {jwt}", "Accept": "application/json"}
 
     raise RuntimeError(
-        "Missing Huntly auth. Provide HUNTLY_TOKEN or HUNTLY_USERNAME/HUNTLY_PASSWORD, or set them in references/huntly.local.json"
+        "Missing Huntly auth. Provide HUNTLY_TOKEN or HUNTLY_USERNAME/HUNTLY_PASSWORD env vars"
     )
 
 
@@ -134,14 +116,14 @@ def main() -> int:
     parser.add_argument("--password", help="Huntly password")
     args = parser.parse_args()
 
-    config = load_local_config()
-    base_url = normalize_base_url(args.base_url or env_or_config("HUNTLY_BASE_URL", config, "baseUrl") or "")
+    config = {}  # no longer loading from JSON
+    base_url = normalize_base_url(args.base_url or os.getenv("HUNTLY_BASE_URL", ""))
     if not base_url:
-        raise RuntimeError("Missing Huntly base URL. Provide --base-url, HUNTLY_BASE_URL, or baseUrl in references/huntly.local.json")
+        raise RuntimeError("Missing Huntly base URL. Provide --base-url or HUNTLY_BASE_URL env var")
 
-    token = args.token or env_or_config("HUNTLY_TOKEN", config, "token")
-    username = args.username or env_or_config("HUNTLY_USERNAME", config, "username")
-    password = args.password or env_or_config("HUNTLY_PASSWORD", config, "password")
+    token = args.token or os.getenv("HUNTLY_TOKEN", "")
+    username = args.username or os.getenv("HUNTLY_USERNAME", "")
+    password = args.password or os.getenv("HUNTLY_PASSWORD", "")
     headers = auth_headers(base_url, token, username, password)
 
     content = read_content(args)

@@ -85,3 +85,4 @@ bun run format:md
 - 较长的补充内容放进 `references/`，不要把 `SKILL.md` 写得过重。
 - 需要复用的辅助脚本优先放到对应 skill 自己的 `scripts/` 目录中。
 - 如果要让本地仓库持续作为 Hermes 软链源，使用 [`scripts/link-skills.sh`](./scripts/link-skills.sh)。
+- 敏感配置（API Token、凭据、本机路径）通过**环境变量**读取，不再使用仓库内的 JSON 配置文件。每个 skill 的 `README.md` 中有所需环境变量说明。

@@ -9,27 +9,26 @@ Use the bundled script to trigger a Jenkins job and (optionally) wait for comple
 
 ## What to do
 
-1. Collect inputs (**ask only what’s missing**):
+1. Collect inputs (**ask only what's missing**):
 
-- **First check environment variables**; if they’re present, do **not** ask the user again.
+- **First check environment variables**; if they're present, do **not** ask the user again.
 - `JENKINS_URL` (e.g. `http://jenkins.example.com:8080`)
 - Job selector: either
   - `--job-path job/<folder>/job/<job>` (recommended)
-  - or `--job-name "友好名字"` resolved via `references/job-aliases.local.json` **if present**, otherwise `references/job-aliases.json`
+  - or `--job-name "友好名字"` resolved via the JSON file at `JENKINS_JOB_ALIASES` env var
 - Auth: `JENKINS_USER` + `JENKINS_TOKEN` (API token)
 - Optional parameters: `k=v` pairs
 - Whether to wait for result (default: wait)
-- On a new machine, if `references/job-aliases.example.json` exists, copy it to `references/job-aliases.local.json` and fill in real aliases before relying on friendly job names
 
 2. Run the script via the `exec` tool.
 
 - Pass credentials via environment variables (never write tokens into code or logs).
-- The script already defaults from env / local files:
+- The script already defaults from env:
   - `--jenkins` ← `JENKINS_URL`
   - `--user` ← `JENKINS_USER`
   - `--token` ← `JENKINS_TOKEN`
   - `--job-path` ← `JOB_PATH`
-  - `--aliases` ← `JENKINS_JOB_ALIASES` or local `references/job-aliases.local.json`
+  - `--aliases` ← `JENKINS_JOB_ALIASES` (path to a JSON file mapping friendly names → job paths)
 - Prefer a single command so the transcript is reproducible.
 
 ## Commands
@@ -82,4 +81,4 @@ python3 skills/jenkins-job-trigger/scripts/run_jenkins_job.py \
 - If Jenkins has CSRF protection enabled, the script auto-fetches a crumb and includes it.
 - Some Jenkins instances do **not** return a queue item URL when triggering a build. The script will fall back to polling `lastBuild` and still print `Build: #<id> ...` plus `BUILD_ID=<id>` for easy parsing.
 - If the build fails due to agent issues (e.g., `No space left on device`), use `--console-tail` to fetch log tail and the script will print a best-effort `Diagnosis:`.
-- If Jenkins is a multibranch pipeline, the “job path” often includes the branch as another `job/<branch>` segment; ask the user for the exact URL/path if unsure.
+- If Jenkins is a multibranch pipeline, the "job path" often includes the branch as another `job/<branch>` segment; ask the user for the exact URL/path if unsure.

@@ -1,6 +1,6 @@
 # Vikunja Data Model Reference
 
-SQLite database path is configured in `vikunja.local.json` (`sqlitePath` field).
+SQLite database path is configured via the `VIKUNJA_SQLITE_PATH` environment variable.
 
 ## Core Tables
 

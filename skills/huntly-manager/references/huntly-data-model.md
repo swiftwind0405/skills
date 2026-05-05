@@ -1,6 +1,6 @@
 # Huntly Data Model Reference
 
-SQLite database path is configured in `huntly.local.json` (`sqlitePath` field).
+SQLite database path is configured via the `HUNTLY_SQLITE_PATH` environment variable.
 
 Derived from the official [huntly-knowledge-base](https://github.com/lcomplete/huntly/blob/main/skills/huntly-knowledge-base/SKILL.md) skill.
 

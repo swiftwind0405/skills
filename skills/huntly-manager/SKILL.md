@@ -70,48 +70,19 @@ Typical inputs:
 - desired operation: query, create, rename/update, or move
 - optional icon/color
 
-## Authentication sources
+## Configuration
 
-Check these in order:
+| Variable             | Required | Description                                                |
+| -------------------- | -------- | ---------------------------------------------------------- |
+| `HUNTLY_BASE_URL`    | Yes      | Base URL, e.g. `https://huntly.example.com`                |
+| `HUNTLY_TOKEN`       | Yes\*    | JWT token for authentication                               |
+| `HUNTLY_USERNAME`    | Yes\*    | Username (alternative to token)                            |
+| `HUNTLY_PASSWORD`    | Yes\*    | Password (alternative to token)                            |
+| `HUNTLY_SQLITE_PATH` | No       | Path to Huntly SQLite database for direct read-only access |
 
-1. Environment variables
-2. `references/huntly.local.json`
-3. `references/huntly.example.json` only as a format reference, never as a real credential source
+\*Provide either `HUNTLY_TOKEN` or both `HUNTLY_USERNAME` + `HUNTLY_PASSWORD`.
 
-Supported auth:
-
-- `HUNTLY_TOKEN`
-- or `HUNTLY_USERNAME` + `HUNTLY_PASSWORD`
-
-Required base URL source:
-
-- `HUNTLY_BASE_URL`
-- or `baseUrl` in `references/huntly.local.json`
-
-## Local config
-
-Copy `references/huntly.example.json` to `references/huntly.local.json` and fill in real values on the current machine.
-
-Example:
-
-```json
-{
-  "baseUrl": "https://huntly.example.com",
-  "token": "YOUR_JWT_TOKEN",
-  "sqlitePath": "/path/to/huntly/db.sqlite"
-}
-```
-
-or:
-
-```json
-{
-  "baseUrl": "https://huntly.example.com",
-  "username": "your-username",
-  "password": "your-password",
-  "sqlitePath": "/path/to/huntly/db.sqlite"
-}
-```
+The agent must confirm auth is configured before making any request.
 
 ## Bundled scripts
 
@@ -262,7 +233,7 @@ When referencing saved Huntly content back to the user, prefer `huntlyUrl` when 
 2. Prefer sending cleaned content HTML to Huntly.
 3. Run `huntly_save_content.py`.
 4. Verify the write when possible:
-   - If `references/huntly.local.json` has `sqlitePath`, query the page by returned `page_id` and confirm `title`, `url`, `library_save_status`, and non-empty `content` length.
+   - If `HUNTLY_SQLITE_PATH` is set, query the page by returned `page_id` and confirm `title`, `url`, `library_save_status`, and non-empty `content` length.
    - Example: `sqlite3 "$sqlitePath" "select id,title,url,library_save_status,length(content) from page where id=<page_id>;"`
 5. Report back the created `page_id`, save mode, collection assignment if any, and verification result.
 
@@ -322,7 +293,7 @@ If the user specified a collection, resolve it via `huntly_collections.py` first
 
 3. Verify the import:
    - Save script returns `ok: true`, a numeric `page_id`, and `save_mode`.
-   - If `sqlitePath` is configured in `references/huntly.local.json`, verify directly:
+   - If `HUNTLY_SQLITE_PATH` is set, verify directly:
 
 ```bash
 sqlite3 '<sqlitePath>' "select id,title,url,library_save_status,length(content) from page where id=<PAGE_ID>;"
@@ -457,4 +428,4 @@ See [references/huntly-data-model.md](references/huntly-data-model.md) for the f
 
 ## Local database
 
-The SQLite database path is stored in `references/huntly.local.json` under the `sqlitePath` key. Use this for direct SQLite queries when the Huntly service or MCP is unavailable, or when ad-hoc SQL is more convenient than the API (e.g. complex joins, bulk analysis).
+The SQLite database path is read from the `HUNTLY_SQLITE_PATH` environment variable. Use this for direct SQLite queries when the Huntly service or MCP is unavailable, or when ad-hoc SQL is more convenient than the API (e.g. complex joins, bulk analysis).

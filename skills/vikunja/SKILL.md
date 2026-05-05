@@ -10,34 +10,15 @@ Uses an API token for authentication — no session management needed.
 
 ## Configuration (required env vars)
 
-| Variable            | Description                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| `VIKUNJA_BASE_URL`  | Base URL of the instance, e.g. `https://vikunja.example.com` |
-| `VIKUNJA_API_TOKEN` | API token created under Settings → API Tokens                |
+| Variable              | Description                                                                |
+| --------------------- | -------------------------------------------------------------------------- |
+| `VIKUNJA_BASE_URL`    | Base URL of the instance, e.g. `https://vikunja.example.com`               |
+| `VIKUNJA_API_TOKEN`   | API token created under Settings → API Tokens                              |
+| `VIKUNJA_SQLITE_PATH` | (Optional) Path to the Vikunja SQLite database for direct read-only access |
 
-The agent must confirm both vars are set before making any request.
+The agent must confirm `VIKUNJA_BASE_URL` and `VIKUNJA_API_TOKEN` are set before making any request.
 If missing, tell the user exactly which var is absent and where to create the token
 (Settings → API Tokens in the Vikunja web UI).
-
-## Local config
-
-Copy `references/vikunja.example.json` to `references/vikunja.local.json` and fill in real values on the current machine.
-
-Example:
-
-```json
-{
-  "baseUrl": "https://vikunja.example.com",
-  "apiToken": "YOUR_API_TOKEN",
-  "sqlitePath": "/path/to/vikunja/db/vikunja.db"
-}
-```
-
-Check these in order for configuration:
-
-1. Environment variables (`VIKUNJA_BASE_URL`, `VIKUNJA_API_TOKEN`)
-2. `references/vikunja.local.json`
-3. `references/vikunja.example.json` only as a format reference, never as a real credential source
 
 ## Important API conventions
 
@@ -284,7 +265,7 @@ ssh vps 'find /data /root /var/lib/docker/volumes/portainer_data/_data/compose -
 
 If Vikunja is down but the user only needs to _read_ data, and this is a self-hosted instance you can access, use the SQLite database as a fallback.
 
-The SQLite database path is stored in `references/vikunja.local.json` under the `sqlitePath` key. See [references/vikunja-data-model.md](references/vikunja-data-model.md) for the full schema and useful queries.
+The SQLite database path is read from the `VIKUNJA_SQLITE_PATH` environment variable. See [references/vikunja-data-model.md](references/vikunja-data-model.md) for the full schema and useful queries.
 
 **Important:** this fallback is read-only. Do not write directly to the database unless the user explicitly asks for DB-level repair and you have confirmed backups/scope.
 
@@ -311,7 +292,7 @@ Guidelines:
 - Do not print or store the JWT in logs, memory, notes, or final responses.
 - Search the Chrome profile's `Local Storage/leveldb` files for the Vikunja origin and JWT-shaped values, then test candidate tokens with a harmless GET such as `/api/v1/tasks/{id}`.
 - Multiple JWTs may be present; some may be expired. Select the one that succeeds.
-- This is a session token, not durable configuration; do not save it into `vikunja.local.json`.
+- This is a session token, not durable configuration; do not persist it.
 
 ### 5. Name matching should be fuzzy enough for human typos
 
@@ -354,4 +335,4 @@ See [references/vikunja-data-model.md](references/vikunja-data-model.md) for the
 
 ## Local database
 
-The SQLite database path is stored in `references/vikunja.local.json` under the `sqlitePath` key. Use this for direct SQLite queries when the Vikunja service is unavailable, or when ad-hoc SQL is more convenient than the API (e.g. complex joins, bulk analysis).
+The SQLite database path is read from the `VIKUNJA_SQLITE_PATH` environment variable. Use this for direct SQLite queries when the Vikunja service is unavailable, or when ad-hoc SQL is more convenient than the API (e.g. complex joins, bulk analysis).

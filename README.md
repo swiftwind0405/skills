@@ -85,3 +85,4 @@ bun run format:md
 - Move larger supporting material into `references/` instead of bloating the main skill file.
 - Keep helper scripts colocated inside the owning skill's `scripts/` directory when possible.
 - Use [`scripts/link-skills.sh`](./scripts/link-skills.sh) when you want the local repository to stay as the source of truth for Hermes symlinks.
+- Sensitive configuration (API tokens, credentials, local paths) is read from **environment variables**, not from JSON files inside the repository. See each skill's `README.md` for required env vars.

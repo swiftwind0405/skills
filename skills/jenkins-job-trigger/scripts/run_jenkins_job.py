@@ -25,19 +25,7 @@ def default_aliases_path():
     env_path = os.getenv("JENKINS_JOB_ALIASES", "").strip()
     if env_path:
         return env_path
-
-    skill_root = Path(__file__).resolve().parent.parent
-    candidates = [
-        skill_root / "references" / "job-aliases.local.json",
-        skill_root / "references" / "job-aliases.json",
-        Path("~/.hermes/skills/jenkins-job-trigger/references/job-aliases.local.json").expanduser(),
-        Path("~/.hermes/skills/jenkins-job-trigger/references/job-aliases.json").expanduser(),
-    ]
-    for candidate in candidates:
-        if candidate.exists():
-            return str(candidate)
-
-    return str(skill_root / "references" / "job-aliases.json")
+    return ""
 
 
 def parse_kv_params(pairs):

@@ -1,5 +1,0 @@
-{
-  "baseUrl": "https://vikunja.example.com",
-  "apiToken": "YOUR_API_TOKEN",
-  "sqlitePath": "/path/to/vikunja/db/vikunja.db"
-}
