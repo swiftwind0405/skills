@@ -71,7 +71,7 @@ If none found, use defaults.
 ${BUN_X} {baseDir}/scripts/main.ts <markdown_file> --theme <theme> [--cite]
 ```
 
-**Frontmatter pitfall**: If conversion logs `Error parsing front-matter` and the generated HTML shows YAML metadata as the visible first heading/title, create a body-only temporary Markdown file by stripping the leading `--- ... ---` block, then rerun conversion with an explicit `--title "..."`. This avoids bad imports when downstream systems (e.g. Huntly) ingest the HTML content.
+**Frontmatter pitfall**: If conversion logs `Error parsing front-matter` and the generated HTML shows YAML metadata as the visible first heading/title, create a body-only temporary Markdown file by stripping the leading `--- ... ---` block, then rerun conversion with an explicit `--title "..."`. This avoids bad imports when downstream systems (e.g. CMS or reading-list services) ingest the HTML content.
 
 Example:
 
