@@ -255,6 +255,7 @@ If images likely contain source-language text, add:
 
 - `url-to-markdown/scripts/baoyu-fetch` may fail when only `npx` is available because the wrapper runs `exec bun ...`; call `scripts/lib/cli.ts` through `npx -y bun` instead.
 - Do not ask about Huntly if the user clearly says “收藏/导入 Huntly”; proceed with default `my-list`.
+- For this user, Huntly actions must use Huntly MCP-provided tools only unless the user explicitly authorizes another path. If Huntly MCP authentication fails (for example `401 Unauthorized: Invalid MCP token or missing login`), stop and ask whether to update/provide a new MCP token or allow a one-off API/UI fallback; do not silently use REST scripts despite older notes in this skill.
 - Do not produce translation-only Markdown for this workflow; the default required output is bilingual vertical comparison.
 - Do not use Huntly browser UI for writes; use `huntly_save_content.py`.
 - For Huntly reads, prefer MCP when native Huntly MCP tools are available; for writes/imports, use REST script.
