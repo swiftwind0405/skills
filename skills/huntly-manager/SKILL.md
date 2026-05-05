@@ -75,9 +75,9 @@ Typical inputs:
 | Variable             | Required | Description                                                |
 | -------------------- | -------- | ---------------------------------------------------------- |
 | `HUNTLY_BASE_URL`    | Yes      | Base URL, e.g. `https://huntly.example.com`                |
-| `HUNTLY_TOKEN`       | Yes\*    | JWT token for authentication                               |
-| `HUNTLY_USERNAME`    | Yes\*    | Username (alternative to token)                            |
-| `HUNTLY_PASSWORD`    | Yes\*    | Password (alternative to token)                            |
+| `HUNTLY_TOKEN`       | Yes\*    | Normal Huntly login JWT for REST write APIs; **not** the MCP token |
+| `HUNTLY_USERNAME`    | Yes\*    | Username (alternative to token; script signs in to obtain JWT) |
+| `HUNTLY_PASSWORD`    | Yes\*    | Password (alternative to token; script signs in to obtain JWT) |
 | `HUNTLY_SQLITE_PATH` | No       | Path to Huntly SQLite database for direct read-only access |
 
 \*Provide either `HUNTLY_TOKEN` or both `HUNTLY_USERNAME` + `HUNTLY_PASSWORD`.
@@ -414,6 +414,7 @@ python3 skills/huntly-manager/scripts/huntly_collections.py update-group --group
 
 ## Notes / gotchas
 
+- Huntly has two different token types: the MCP token (`sk-huntly-...`) is only for `/api/mcp/sse` read tools and does **not** authorize REST write APIs like `/api/page/save`. For saving/importing content, use a normal Huntly login JWT in `HUNTLY_TOKEN`, or configure `HUNTLY_USERNAME` + `HUNTLY_PASSWORD` so the script can call `/api/auth/signin` first.
 - Huntly requires `url` and `domain`; the save script derives `domain` from the URL if omitted.
 - Huntly stores saved `content` as HTML. Prefer extracted HTML over raw Markdown when possible.
 - `save-mode my-list` is the default because `page/save` alone only creates the item; it does not guarantee the item lands in the user's library list.
