@@ -72,13 +72,13 @@ Typical inputs:
 
 ## Configuration
 
-| Variable             | Required | Description                                                |
-| -------------------- | -------- | ---------------------------------------------------------- |
-| `HUNTLY_BASE_URL`    | Yes      | Base URL, e.g. `https://huntly.example.com`                |
+| Variable             | Required | Description                                                        |
+| -------------------- | -------- | ------------------------------------------------------------------ |
+| `HUNTLY_BASE_URL`    | Yes      | Base URL, e.g. `https://huntly.example.com`                        |
 | `HUNTLY_TOKEN`       | Yes\*    | Normal Huntly login JWT for REST write APIs; **not** the MCP token |
-| `HUNTLY_USERNAME`    | Yes\*    | Username (alternative to token; script signs in to obtain JWT) |
-| `HUNTLY_PASSWORD`    | Yes\*    | Password (alternative to token; script signs in to obtain JWT) |
-| `HUNTLY_SQLITE_PATH` | No       | Path to Huntly SQLite database for direct read-only access |
+| `HUNTLY_USERNAME`    | Yes\*    | Username (alternative to token; script signs in to obtain JWT)     |
+| `HUNTLY_PASSWORD`    | Yes\*    | Password (alternative to token; script signs in to obtain JWT)     |
+| `HUNTLY_SQLITE_PATH` | No       | Path to Huntly SQLite database for direct read-only access         |
 
 \*Provide either `HUNTLY_TOKEN` or both `HUNTLY_USERNAME` + `HUNTLY_PASSWORD`.
 
