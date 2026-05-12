@@ -35,7 +35,6 @@ npx skills add https://github.com/swiftwind0405/skills
 | [`jenkins-job-trigger`](./skills/jenkins-job-trigger/SKILL.md) | 通过 API Token + CSRF crumb 触发 Jenkins 构建，可等待结果，失败时自动拉取 console 尾部日志。       | `references/`, `scripts/` |
 | [`markdown-to-html`](./skills/markdown-to-html/SKILL.md)       | 将 Markdown 转换为带主题样式的 HTML，支持代码高亮、数学公式、脚注、提示框及微信外链转底部引用。    | `scripts/`                |
 | [`obsidian-cli`](./skills/obsidian-cli/SKILL.md)               | 通过自带的 `obsidian` CLI 读写与管理 Obsidian 笔记，遵循 PARA 目录结构。                           | None                      |
-| [`project-dev-guide`](./skills/project-dev-guide/SKILL.md)     | 读代码或改代码前，先把项目别名解析到本机真实仓库绝对路径。                                         | `references/`             |
 | [`tdl`](./skills/tdl/SKILL.md)                                 | 登录 Telegram 并通过 `tdl` 下载媒体（按类型过滤、下载相册组、断点续传）。                          | `scripts/`                |
 | [`url-to-markdown`](./skills/url-to-markdown/SKILL.md)         | 通过 Chrome CDP 抓取任意 URL 并转为 Markdown，内置 X/Twitter、YouTube、Hacker News 等适配器。      | `references/`, `scripts/` |
 | [`url-translate-html`](./skills/url-translate-html/SKILL.md)   | 将 URL 转为双语原文/中文上下对照 Markdown，并渲染为带主题样式的 HTML。                             | None                      |

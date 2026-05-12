@@ -7,7 +7,6 @@ SKILLS_ROOT="$REPO_ROOT/skills"
 SKILLS=(
   obsidian-cli
   jenkins-job-trigger
-  project-dev-guide
   tdl
   vikunja
 )
