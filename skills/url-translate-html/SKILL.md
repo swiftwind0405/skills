@@ -178,6 +178,33 @@ Verify the HTML:
 - Original text appears before Chinese blockquote translations throughout.
 - Images/code blocks are present where expected; code block contents remain unchanged.
 
+Renderer fallback for remote-image TLS failures:
+
+- If `markdown-to-html` fails while downloading remote images with errors such as `unknown certificate verification error`, retry once with the same command and `NODE_TLS_REJECT_UNAUTHORIZED=0`.
+- If Bun/Node still fails, do not block the capture. Render a self-contained/simple HTML file with Python Markdown in a temporary venv, preserving remote image URLs instead of downloading them:
+
+  ```bash
+  python3 -m venv /tmp/url_translate_html/venv
+  /tmp/url_translate_html/venv/bin/pip install markdown pygments
+  /tmp/url_translate_html/venv/bin/python - <<'PY'
+  from pathlib import Path
+  import html, markdown
+  work = Path('/tmp/url_translate_html')
+  md_path = work / 'translation-body.md'
+  body = md_path.read_text(encoding='utf-8')
+  html_body = markdown.markdown(
+      body,
+      extensions=['extra', 'sane_lists', 'fenced_code', 'codehilite', 'tables'],
+  )
+  title = '<ORIGINAL_TITLE> / <TRANSLATED_TITLE>'
+  css = 'body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans SC",Arial,sans-serif;line-height:1.75;max-width:860px;margin:0 auto;padding:32px 20px}blockquote{border-left:4px solid #0F4C81;background:#f0f7ff;padding:.7em 1em;border-radius:8px}img{max-width:100%;height:auto;border-radius:12px}pre{overflow:auto}'
+  out = f'<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)}</title><style>{css}</style></head><body>{html_body}</body></html>'
+  (work / 'translation-body.html').write_text(out, encoding='utf-8')
+  PY
+  ```
+
+- Verify the fallback HTML by checking file size and that representative original and Chinese strings both occur in the file.
+
 ## Final response format
 
 Report concise completion details:

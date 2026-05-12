@@ -108,7 +108,7 @@ def main() -> int:
     parser.add_argument("--content", help="Inline HTML content")
     parser.add_argument("--content-file", help="Path to a file containing HTML content")
     parser.add_argument("--stdin-content", action="store_true", help="Read content from stdin")
-    parser.add_argument("--save-mode", choices=["my-list", "archive", "none"], default="my-list")
+    parser.add_argument("--save-mode", choices=["my-list", "read-later", "archive", "none"], default="my-list")
     parser.add_argument("--collection-id", type=int, help="Optional Huntly collection ID")
     parser.add_argument("--base-url", help="Huntly base URL, e.g. https://huntly.example.com")
     parser.add_argument("--token", help="JWT token for Huntly")
@@ -150,6 +150,13 @@ def main() -> int:
     if args.save_mode == "my-list":
         operations["library"] = parse_api_result(
             request_json("POST", f"{base_url}/api/page/saveToLibrary/{page_id}", headers)
+        )
+    elif args.save_mode == "read-later":
+        operations["library"] = parse_api_result(
+            request_json("POST", f"{base_url}/api/page/saveToLibrary/{page_id}", headers)
+        )
+        operations["read_later"] = parse_api_result(
+            request_json("POST", f"{base_url}/api/page/readLater/{page_id}", headers)
         )
     elif args.save_mode == "archive":
         operations["library"] = parse_api_result(

@@ -59,7 +59,7 @@ Optional:
 - `siteName`
 - `faviconUrl`
 - `collectionId`
-- save mode: `my-list` (default), `archive`, or `none`
+- save mode: `read-later` (default for this user), `my-list`, `archive`, or `none`
 
 ### For collection management
 
@@ -303,7 +303,7 @@ Expected: title is bilingual, URL is original source, `library_save_status = 1` 
 
 Default assumptions:
 
-- Save mode: `my-list` unless user specifies Archive/collection.
+- Save mode: `read-later` for this user unless they specify My List, Archive, or a collection.
 - Use cleaned bilingual HTML as Huntly `content`, not raw Markdown.
 - Preserve original source URL as the Huntly URL.
 - Title format: `<original title> / <Chinese title>`.
@@ -417,7 +417,9 @@ python3 skills/huntly-manager/scripts/huntly_collections.py update-group --group
 - Huntly has two different token types: the MCP token (`sk-huntly-...`) is only for `/api/mcp/sse` read tools and does **not** authorize REST write APIs like `/api/page/save`. For saving/importing content, use a normal Huntly login JWT in `HUNTLY_TOKEN`, or configure `HUNTLY_USERNAME` + `HUNTLY_PASSWORD` so the script can call `/api/auth/signin` first.
 - Huntly requires `url` and `domain`; the save script derives `domain` from the URL if omitted.
 - Huntly stores saved `content` as HTML. Prefer extracted HTML over raw Markdown when possible.
-- `save-mode my-list` is the default because `page/save` alone only creates the item; it does not guarantee the item lands in the user's library list.
+- `save-mode read-later` saves the item to the library and then marks it as read later through `POST /api/page/readLater/{id}`; use this as the default for this user.
+- `save-mode my-list` only saves the item to My List through `POST /api/page/saveToLibrary/{id}`.
+- `save-mode archive` archives through `POST /api/page/archive/{id}`.
 - For collection creation, `groupId` targets the group and `parentId` is only for nesting under another collection.
 - `collections/tree` returns groups with nested collections; group names and collection names should not be conflated.
 - The backend enforces duplicate group-name checks, but collection duplicate prevention is mainly a client-side convention, so prefer querying first or using `--ensure-unique`.
