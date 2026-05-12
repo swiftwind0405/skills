@@ -1,26 +1,20 @@
-# Huntly Manager Skill
+# huntly-manager
 
-Use Huntly in mixed mode: read via MCP, save content and manage collections/groups via REST API scripts.
+Use Huntly in mixed mode: MCP for reads, REST API scripts for saving content and managing collections/groups.
 
-## Environment Variables
+## Configuration
 
-| Variable             | Required | Description                                                |
-| -------------------- | -------- | ---------------------------------------------------------- |
-| `HUNTLY_BASE_URL`    | Yes      | Base URL, e.g. `https://huntly.example.com`                |
-| `HUNTLY_TOKEN`       | Yes\*    | JWT token for authentication                               |
-| `HUNTLY_USERNAME`    | Yes\*    | Username (alternative to token)                            |
-| `HUNTLY_PASSWORD`    | Yes\*    | Password (alternative to token)                            |
-| `HUNTLY_SQLITE_PATH` | No       | Path to Huntly SQLite database for direct read-only access |
+| Variable | Required | Description |
+|---|---|---|
+| `HUNTLY_BASE_URL` | Yes | Base URL, e.g. `https://huntly.example.com` |
+| `HUNTLY_TOKEN` | Yes\* | Normal Huntly login JWT for REST write APIs (not the MCP token) |
+| `HUNTLY_USERNAME` | Yes\* | Username (alternative to token; script signs in to obtain JWT) |
+| `HUNTLY_PASSWORD` | Yes\* | Password (alternative to token) |
+| `HUNTLY_SQLITE_PATH` | No | Path to SQLite DB for direct read-only access |
 
-\*Provide either `HUNTLY_TOKEN` or both `HUNTLY_USERNAME` + `HUNTLY_PASSWORD`.
+\* Either `HUNTLY_TOKEN` or `HUNTLY_USERNAME` + `HUNTLY_PASSWORD` is required.
 
-### Example
+## Bundled Assets
 
-```bash
-export HUNTLY_BASE_URL="https://huntly.example.com"
-export HUNTLY_TOKEN="your-jwt-token-here"
-# or:
-# export HUNTLY_USERNAME="your-username"
-# export HUNTLY_PASSWORD="your-password"
-export HUNTLY_SQLITE_PATH="/path/to/huntly/db.sqlite"
-```
+- `references/` — API documentation
+- `scripts/` — `huntly_save_content.py`, `huntly_collections.py`

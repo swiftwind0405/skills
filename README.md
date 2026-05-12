@@ -2,86 +2,52 @@
 
 [简体中文](./README.zh.md)
 
-This repository maintains a small set of custom Agent Skills for practical local workflows.
+A curated set of custom Agent Skills for local engineering workflows.
 
-## How To Use
+## Usage
 
-You can use this repository in two ways:
-
-1. Add it directly as a skill source with `bunx skills add` or `npx skills add`.
-2. Symlink the local skill folders into `~/.hermes/skills/` with [`scripts/link-skills.sh`](./scripts/link-skills.sh).
-
-Install this repository as a skill source:
+Add as a skill source:
 
 ```bash
 bunx skills add https://github.com/swiftwind0405/skills
 ```
 
-or:
+Or symlink local folders into `~/.hermes/skills/`:
 
 ```bash
-npx skills add https://github.com/swiftwind0405/skills
+bash scripts/link-skills.sh
 ```
 
-## Skills Catalog
+## Skills
 
-The table below lists the skills maintained in this repository.
+- [articles-translates](./skills/articles-translates/)
+- [format-markdown](./skills/format-markdown/)
+- [huntly-manager](./skills/huntly-manager/)
+- [jenkins-job-trigger](./skills/jenkins-job-trigger/)
+- [markdown-to-html](./skills/markdown-to-html/)
+- [obsidian-cli](./skills/obsidian-cli/)
+- [tdl](./skills/tdl/)
+- [url-to-markdown](./skills/url-to-markdown/)
+- [url-translate-html](./skills/url-translate-html/)
+- [vikunja](./skills/vikunja/)
 
-| Name                                                           | Description                                                                                                                                             | Bundled Assets            |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| [`articles-translates`](./skills/articles-translates/SKILL.md) | Three-mode article translator (quick/normal/refined) with glossary support, chunked long-content handling, and customizable style/audience preferences. | `references/`, `scripts/` |
-| [`format-markdown`](./skills/format-markdown/SKILL.md)         | Formats plain text or markdown with frontmatter, titles, summaries, headings, bold, lists; includes CJK typography fixes.                               | `references/`, `scripts/` |
-| [`huntly-manager`](./skills/huntly-manager/SKILL.md)           | Use Huntly in mixed mode: read via MCP, and save content or manage collections/groups via REST API scripts.                                             | `references/`, `scripts/` |
-| [`jenkins-job-trigger`](./skills/jenkins-job-trigger/SKILL.md) | Trigger Jenkins jobs with API token + CSRF crumb; optionally wait for build result and tail console on failure.                                         | `references/`, `scripts/` |
-| [`markdown-to-html`](./skills/markdown-to-html/SKILL.md)       | Converts Markdown to styled HTML with WeChat-compatible themes, code highlighting, math, footnotes, alerts, and optional bottom citations.              | `scripts/`                |
-| [`obsidian-cli`](./skills/obsidian-cli/SKILL.md)               | Read, create, and manage Obsidian vault notes via the bundled `obsidian` CLI; follows PARA structure.                                                   | None                      |
-| [`tdl`](./skills/tdl/SKILL.md)                                 | Log in to Telegram and download media (filter by file type, group albums, resume) via `tdl`.                                                            | `scripts/`                |
-| [`url-to-markdown`](./skills/url-to-markdown/SKILL.md)         | Fetch any URL and convert to markdown via Chrome CDP with adapters for X/Twitter, YouTube, Hacker News, and generic pages.                              | `references/`, `scripts/` |
-| [`url-translate-html`](./skills/url-translate-html/SKILL.md)   | Convert a URL to bilingual original/Chinese Markdown in vertical comparison format and render it to styled HTML.                                        | None                      |
-| [`vikunja`](./skills/vikunja/SKILL.md)                         | Manage Vikunja tasks, projects, labels, assignees, reminders via REST API with safe-update pattern.                                                     | `references/`             |
+Each skill has its own README with details and configuration.
 
-## Repository Layout
-
-Each skill lives in its own folder and follows the Agent Skills specification:
+## Layout
 
 ```text
 skills/
   <skill-name>/
     SKILL.md
-    references/   # optional supporting docs
-    scripts/      # optional executable helpers
+    README.md      # skill overview & config
+    references/
+    scripts/
 ```
-
-The repository also includes lightweight maintenance tooling:
-
-- [`package.json`](./package.json) for Markdown formatting commands
-- [`.github/workflows/markdown.yml`](./.github/workflows/markdown.yml) for formatting checks
-- [`.github/workflows/markdown-fix.yml`](./.github/workflows/markdown-fix.yml) for manual Markdown autofix
 
 ## Development
 
-Install tooling:
-
 ```bash
 bun install
+bun run check:md    # validate Markdown formatting
+bun run format:md   # auto-fix Markdown formatting
 ```
-
-Check Markdown formatting:
-
-```bash
-bun run check:md
-```
-
-Format Markdown files:
-
-```bash
-bun run format:md
-```
-
-## Notes
-
-- Keep core instructions in each `SKILL.md`.
-- Move larger supporting material into `references/` instead of bloating the main skill file.
-- Keep helper scripts colocated inside the owning skill's `scripts/` directory when possible.
-- Use [`scripts/link-skills.sh`](./scripts/link-skills.sh) when you want the local repository to stay as the source of truth for Hermes symlinks.
-- Sensitive configuration (API tokens, credentials, local paths) is read from **environment variables**, not from JSON files inside the repository. See each skill's `README.md` for required env vars.
