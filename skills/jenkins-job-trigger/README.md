@@ -4,13 +4,13 @@ Trigger Jenkins jobs via a bundled Python script that authenticates with usernam
 
 ## Configuration
 
-| Variable              | Required | Description                                                       |
-| --------------------- | -------- | ----------------------------------------------------------------- |
-| `JENKINS_URL`         | Yes      | Jenkins base URL, e.g. `http://jenkins.example.com:8080`          |
-| `JENKINS_USER`        | Yes      | Jenkins username                                                  |
-| `JENKINS_TOKEN`       | Yes      | Jenkins API token (not password)                                  |
-| `JOB_PATH`            | No       | Default job path, e.g. `job/example-folder/job/example-web-build` |
-| `JENKINS_JOB_ALIASES` | No       | Path to JSON file mapping friendly names → job paths              |
+| Variable | Required | Description |
+|---|---|---|
+| `JENKINS_URL` | Yes | Jenkins base URL, e.g. `http://jenkins.example.com:8080` |
+| `JENKINS_USER` | Yes | Jenkins username |
+| `JENKINS_TOKEN` | Yes | Jenkins API token (not password) |
+| `JOB_PATH` | No | Default job path, e.g. `job/example-folder/job/example-web-build` |
+| `JENKINS_JOB_ALIASES` | No | Path to JSON file mapping friendly names → job paths |
 
 ### Job Aliases Format
 

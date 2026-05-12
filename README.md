@@ -22,7 +22,6 @@ bash scripts/link-skills.sh
 
 - [articles-translates](./skills/articles-translates/)
 - [format-markdown](./skills/format-markdown/)
-- [gitlab-mr](./skills/gitlab-mr/)
 - [huntly-manager](./skills/huntly-manager/)
 - [jenkins-job-trigger](./skills/jenkins-job-trigger/)
 - [markdown-to-html](./skills/markdown-to-html/)
