@@ -22,6 +22,8 @@ Load and follow these skills first:
 2. `articles-translates` — translation workflow and terminology rules
 3. `markdown-to-html` — render translated Markdown to HTML
 
+These skills are sibling directories of this one. `{baseDir}` = this SKILL.md's directory path; companion scripts are referenced as `{baseDir}/../<skill>/scripts/...`.
+
 ## Default assumptions
 
 - Target language: Chinese (`zh-CN`) unless the user specifies otherwise.
@@ -54,7 +56,7 @@ command -v bun || command -v npx
 If only `npx` is available, do **not** run the shell wrapper through `npx -y bun`; the wrapper itself is a shell script that expects a `bun` binary. Instead call the TypeScript CLI directly:
 
 ```bash
-npx -y bun /Users/stanley/Workspace/main/skills/skills/url-to-markdown/scripts/lib/cli.ts \
+npx -y bun {baseDir}/../url-to-markdown/scripts/lib/cli.ts \
   '<URL>' \
   --output /tmp/url_translate_html/source.md \
   --debug-dir /tmp/url_translate_html/debug \
@@ -157,7 +159,7 @@ Path('/tmp/url_translate_html/translation-body.md').write_text(body, encoding='u
 Then render:
 
 ```bash
-npx -y bun /Users/stanley/Workspace/main/skills/skills/markdown-to-html/scripts/main.ts \
+npx -y bun {baseDir}/../markdown-to-html/scripts/main.ts \
   /tmp/url_translate_html/translation-body.md \
   --theme modern \
   --color blue \
