@@ -76,11 +76,12 @@ Full template: [references/config/first-time-setup.md](references/config/first-t
 
 ### Supported Keys
 
-| Key                  | Default | Values            | Description                                             |
-| -------------------- | ------- | ----------------- | ------------------------------------------------------- |
-| `download_media`     | `ask`   | `ask` / `1` / `0` | `ask` = prompt each time, `1` = always, `0` = never     |
-| `default_output_dir` | empty   | path or empty     | Default output directory (empty = `./url-to-markdown/`) |
-| `upload_target`      | `none`  | `none` / `cos`    | `cos` = upload downloaded media to Tencent Cloud COS    |
+| Key                  | Default | Values            | Description                                                                       |
+| -------------------- | ------- | ----------------- | --------------------------------------------------------------------------------- |
+| `download_media`     | `ask`   | `ask` / `1` / `0` | `ask` = prompt each time, `1` = always, `0` = never                               |
+| `default_output_dir` | empty   | path or empty     | Default output directory (empty = `./url-to-markdown/`)                           |
+| `upload_target`      | `none`  | `none` / `cos`    | `cos` = upload downloaded media to Tencent Cloud COS                              |
+| `cos_prefix`         | empty   | path or empty     | Fixed COS object key prefix when `upload_target: cos` (empty = `url-to-markdown`) |
 
 **EXTEND.md → CLI mapping**:
 
@@ -89,6 +90,7 @@ Full template: [references/config/first-time-setup.md](references/config/first-t
 | `download_media: 1`            | `--download-media`                                     | Requires `--output` to be set                  |
 | `default_output_dir: ./posts/` | Agent constructs `--output ./posts/{domain}/{slug}.md` | Agent generates path, not a direct flag        |
 | `upload_target: cos`           | `--upload-cos`                                         | Implies `--download-media`; needs COS env vars |
+| `cos_prefix: articles-collect` | `--cos-prefix articles-collect`                        | Only applies when `upload_target: cos`         |
 
 **Value priority**: CLI arguments → EXTEND.md → skill defaults.
 
@@ -138,6 +140,7 @@ ${READER} <url> --adapter youtube --output transcript.md
 | `--interaction-poll-interval <ms>` | Poll interval for interaction checks (default: 1500)                                                                                                           |
 | `--download-media`                 | Download images/videos to local `imgs/` and `videos/`, rewrite markdown links. Requires `--output`                                                             |
 | `--upload-cos`                     | Upload downloaded media to Tencent Cloud COS, rewrite links to COS URLs, delete local copies. Implies `--download-media`; requires `--output` and COS env vars |
+| `--cos-prefix <path>`              | Fixed COS object key prefix (overrides `COS_PREFIX` env, default `url-to-markdown`)                                                                            |
 | `--media-dir <dir>`                | Base directory for downloaded media (default: same as `--output` directory)                                                                                    |
 | `--cdp-url <url>`                  | Reuse existing Chrome DevTools Protocol endpoint                                                                                                               |
 | `--browser-path <path>`            | Custom Chrome/Chromium binary path                                                                                                                             |

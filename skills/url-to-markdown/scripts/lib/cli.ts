@@ -22,6 +22,7 @@ Options:
   --upload-cos          Upload downloaded media to Tencent Cloud COS, rewrite markdown links to COS URLs,
                         and delete the local copies. Implies --download-media; requires --output and the
                         COS_SECRET_ID / COS_SECRET_KEY / COS_BUCKET / COS_REGION environment variables
+  --cos-prefix <path>   COS object key prefix (overrides COS_PREFIX env; default: url-to-markdown)
   --media-dir <dir>     Base directory for downloaded media. Defaults to the output directory
   --debug-dir <dir>     Write debug artifacts
   --cdp-url <url>       Reuse an existing Chrome DevTools endpoint
@@ -120,6 +121,11 @@ export function parseArgs(argv: string[]): CliOptions {
     }
     if (value === "--upload-cos") {
       options.uploadCos = true;
+      continue;
+    }
+    if (value === "--cos-prefix") {
+      options.cosPrefix = args[index + 1];
+      index += 1;
       continue;
     }
     if (value === "--headless") {

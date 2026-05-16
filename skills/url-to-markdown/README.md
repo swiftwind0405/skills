@@ -32,8 +32,11 @@ export COS_REGION=ap-guangzhou
 baoyu-fetch <url> --output article.md --upload-cos
 ```
 
-Objects are stored under `{COS_PREFIX}/{slug}/{imgs|videos}/{filename}`.
-A failed upload keeps that file local and leaves its link unchanged.
+Objects are stored under `{prefix}/{slug}/{imgs|videos}/{filename}`. The prefix
+defaults to `url-to-markdown` and can be fixed with the `COS_PREFIX` env var or
+the `--cos-prefix` flag (the flag wins), e.g. `--cos-prefix articles-collect`
+stores objects under `articles-collect/...`. A failed upload keeps that file
+local and leaves its link unchanged.
 
 ## Bundled Assets
 

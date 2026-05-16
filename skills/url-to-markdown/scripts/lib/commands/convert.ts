@@ -39,6 +39,7 @@ export interface ConvertCommandOptions {
   headless: boolean;
   downloadMedia: boolean;
   uploadCos: boolean;
+  cosPrefix?: string;
   mediaDir?: string;
   waitMode: WaitMode;
   interactionTimeoutMs: number;
@@ -538,6 +539,10 @@ export async function runConvertCommand(options: ConvertCommandOptions): Promise
           throw new Error(
             "--upload-cos requires COS_SECRET_ID, COS_SECRET_KEY, COS_BUCKET, and COS_REGION environment variables to be set",
           );
+        }
+        const prefixOverride = options.cosPrefix?.trim().replace(/^\/+|\/+$/g, "");
+        if (prefixOverride) {
+          cosConfig.prefix = prefixOverride;
         }
         replacements = await uploadReplacementsToCos(replacements, cosConfig, logger);
         downloadResult = { ...downloadResult, replacements };
