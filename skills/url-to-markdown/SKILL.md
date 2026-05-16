@@ -52,18 +52,23 @@ Check EXTEND.md in priority order — the first one found wins:
 
 ### First-Time Setup ⛔ BLOCKING
 
-When EXTEND.md is not found, you **MUST** use `AskUserQuestion` to gather preferences before creating EXTEND.md. **NEVER** create EXTEND.md with silent defaults. Generation is BLOCKED until setup completes. Batch all three questions into a single call:
+When EXTEND.md is not found, you **MUST** use `AskUserQuestion` to gather preferences before creating EXTEND.md. **NEVER** create EXTEND.md with silent defaults. Generation is BLOCKED until setup completes. Batch all four questions into a single call:
 
 - **Q1 — Media** (header "Media"): "How to handle images and videos in pages?"
   - "Ask each time (Recommended)" — Prompt after each save
   - "Always download" — Download to local `imgs/` and `videos/`
   - "Never download" — Keep remote URLs
-- **Q2 — Output** (header "Output"): "Default output directory?"
+- **Q2 — Upload** (header "Upload"): "Upload downloaded media to cloud storage?"
+  - "Don't upload (Recommended)" — Keep media local or as remote URLs
+  - "Tencent Cloud COS" — Upload media to COS, rewrite links to COS URLs, delete local copies (needs `COS_*` env vars)
+- **Q3 — Output** (header "Output"): "Default output directory?"
   - "url-to-markdown (Recommended)" — Save to `./url-to-markdown/{domain}/{slug}.md`
   - User may pick "Other" and type a custom path
-- **Q3 — Save** (header "Save"): "Where to save preferences?"
+- **Q4 — Save** (header "Save"): "Where to save preferences?"
   - "User (Recommended)" — `~/.baoyu-skills/` (all projects)
   - "Project" — `.baoyu-skills/` (this project only)
+
+Once `upload_target: cos` is saved, every later run defaults to `--upload-cos` with no extra flags; `upload_target: none` (or a missing key) keeps the original local/remote behavior.
 
 After answers, write EXTEND.md, confirm "Preferences saved to [path]", then continue.
 

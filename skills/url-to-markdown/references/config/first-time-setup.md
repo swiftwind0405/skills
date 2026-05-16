@@ -57,7 +57,21 @@ options:
     description: "Keep original remote URLs in markdown"
 ```
 
-### Question 2: Default Output Directory
+### Question 2: Media Upload
+
+```yaml
+header: "Upload"
+question: "Upload downloaded media to cloud storage?"
+options:
+  - label: "Don't upload (Recommended)"
+    description: "Keep media local or as remote URLs"
+  - label: "Tencent Cloud COS"
+    description: "Upload media to COS, rewrite links to COS URLs, delete local copies. Requires COS_SECRET_ID / COS_SECRET_KEY / COS_BUCKET / COS_REGION env vars"
+```
+
+Note: If the user picks COS, write `upload_target: cos`; otherwise write `upload_target: none`. Once `upload_target: cos` is saved, later runs default to `--upload-cos` automatically.
+
+### Question 3: Default Output Directory
 
 ```yaml
 header: "Output"
@@ -69,7 +83,7 @@ options:
 
 Note: User will likely choose "Other" to type a custom path.
 
-### Question 3: Save Location
+### Question 4: Save Location
 
 ```yaml
 header: "Save"
@@ -99,6 +113,7 @@ options:
 
 ```md
 download_media: [ask/1/0]
+upload_target: [none/cos]
 default_output_dir: [path or empty]
 ```
 
