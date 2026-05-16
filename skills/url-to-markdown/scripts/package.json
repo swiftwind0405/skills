@@ -11,6 +11,7 @@
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
     "chrome-launcher": "^1.2.1",
+    "cos-nodejs-sdk-v5": "^2.14.6",
     "defuddle": "^0.17.0",
     "jsdom": "^29.0.2",
     "remark-gfm": "^4.0.1",

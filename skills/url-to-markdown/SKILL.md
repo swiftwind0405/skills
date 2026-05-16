@@ -48,7 +48,7 @@ Check EXTEND.md in priority order — the first one found wins:
 | Found     | Read, parse, apply settings                                                 |
 | Not found | **MUST** run first-time setup (see below) — do NOT silently create defaults |
 
-**EXTEND.md supports**: download media by default, default output directory.
+**EXTEND.md supports**: download media by default, default output directory, media upload target (e.g. Tencent Cloud COS).
 
 ### First-Time Setup ⛔ BLOCKING
 
@@ -75,13 +75,15 @@ Full template: [references/config/first-time-setup.md](references/config/first-t
 | -------------------- | ------- | ----------------- | ------------------------------------------------------- |
 | `download_media`     | `ask`   | `ask` / `1` / `0` | `ask` = prompt each time, `1` = always, `0` = never     |
 | `default_output_dir` | empty   | path or empty     | Default output directory (empty = `./url-to-markdown/`) |
+| `upload_target`      | `none`  | `none` / `cos`    | `cos` = upload downloaded media to Tencent Cloud COS    |
 
 **EXTEND.md → CLI mapping**:
 
-| EXTEND.md key                  | CLI argument                                           | Notes                                   |
-| ------------------------------ | ------------------------------------------------------ | --------------------------------------- |
-| `download_media: 1`            | `--download-media`                                     | Requires `--output` to be set           |
-| `default_output_dir: ./posts/` | Agent constructs `--output ./posts/{domain}/{slug}.md` | Agent generates path, not a direct flag |
+| EXTEND.md key                  | CLI argument                                           | Notes                                          |
+| ------------------------------ | ------------------------------------------------------ | ---------------------------------------------- |
+| `download_media: 1`            | `--download-media`                                     | Requires `--output` to be set                  |
+| `default_output_dir: ./posts/` | Agent constructs `--output ./posts/{domain}/{slug}.md` | Agent generates path, not a direct flag        |
+| `upload_target: cos`           | `--upload-cos`                                         | Implies `--download-media`; needs COS env vars |
 
 **Value priority**: CLI arguments → EXTEND.md → skill defaults.
 
@@ -96,6 +98,9 @@ ${READER} <url> --output article.md
 
 # Save with media download
 ${READER} <url> --output article.md --download-media
+
+# Save and upload media to Tencent Cloud COS (rewrites links to COS URLs, deletes local copies)
+${READER} <url> --output article.md --upload-cos
 
 # Wait for interaction (login/CAPTCHA) — auto-detect and continue
 ${READER} <url> --wait-for interaction --output article.md
@@ -112,26 +117,27 @@ ${READER} <url> --adapter youtube --output transcript.md
 
 ## Options
 
-| Option                             | Description                                                                                             |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `<url>`                            | URL to fetch                                                                                            |
-| `--output <path>`                  | Output file path (default: stdout)                                                                      |
-| `--format <type>`                  | Output format: `markdown` (default) or `json`                                                           |
-| `--json`                           | Shorthand for `--format json`                                                                           |
-| `--adapter <name>`                 | Force adapter: `x`, `youtube`, `hn`, or `generic` (default: auto-detect)                                |
-| `--headless`                       | Force headless Chrome (no visible window)                                                               |
-| `--wait-for <mode>`                | Interaction wait mode: `none` (default), `interaction`, or `force`                                      |
-| `--wait-for-interaction`           | Alias for `--wait-for interaction`                                                                      |
-| `--wait-for-login`                 | Alias for `--wait-for interaction`                                                                      |
-| `--timeout <ms>`                   | Page load timeout (default: 30000)                                                                      |
-| `--interaction-timeout <ms>`       | Login/CAPTCHA wait timeout (default: 600000 = 10 min)                                                   |
-| `--interaction-poll-interval <ms>` | Poll interval for interaction checks (default: 1500)                                                    |
-| `--download-media`                 | Download images/videos to local `imgs/` and `videos/`, rewrite markdown links. Requires `--output`      |
-| `--media-dir <dir>`                | Base directory for downloaded media (default: same as `--output` directory)                             |
-| `--cdp-url <url>`                  | Reuse existing Chrome DevTools Protocol endpoint                                                        |
-| `--browser-path <path>`            | Custom Chrome/Chromium binary path                                                                      |
-| `--chrome-profile-dir <path>`      | Chrome user data directory (default: `BAOYU_CHROME_PROFILE_DIR` env or `./baoyu-skills/chrome-profile`) |
-| `--debug-dir <dir>`                | Write debug artifacts (document.json, markdown.md, page.html, network.json)                             |
+| Option                             | Description                                                                                                                                                    |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `<url>`                            | URL to fetch                                                                                                                                                   |
+| `--output <path>`                  | Output file path (default: stdout)                                                                                                                             |
+| `--format <type>`                  | Output format: `markdown` (default) or `json`                                                                                                                  |
+| `--json`                           | Shorthand for `--format json`                                                                                                                                  |
+| `--adapter <name>`                 | Force adapter: `x`, `youtube`, `hn`, or `generic` (default: auto-detect)                                                                                       |
+| `--headless`                       | Force headless Chrome (no visible window)                                                                                                                      |
+| `--wait-for <mode>`                | Interaction wait mode: `none` (default), `interaction`, or `force`                                                                                             |
+| `--wait-for-interaction`           | Alias for `--wait-for interaction`                                                                                                                             |
+| `--wait-for-login`                 | Alias for `--wait-for interaction`                                                                                                                             |
+| `--timeout <ms>`                   | Page load timeout (default: 30000)                                                                                                                             |
+| `--interaction-timeout <ms>`       | Login/CAPTCHA wait timeout (default: 600000 = 10 min)                                                                                                          |
+| `--interaction-poll-interval <ms>` | Poll interval for interaction checks (default: 1500)                                                                                                           |
+| `--download-media`                 | Download images/videos to local `imgs/` and `videos/`, rewrite markdown links. Requires `--output`                                                             |
+| `--upload-cos`                     | Upload downloaded media to Tencent Cloud COS, rewrite links to COS URLs, delete local copies. Implies `--download-media`; requires `--output` and COS env vars |
+| `--media-dir <dir>`                | Base directory for downloaded media (default: same as `--output` directory)                                                                                    |
+| `--cdp-url <url>`                  | Reuse existing Chrome DevTools Protocol endpoint                                                                                                               |
+| `--browser-path <path>`            | Custom Chrome/Chromium binary path                                                                                                                             |
+| `--chrome-profile-dir <path>`      | Chrome user data directory (default: `BAOYU_CHROME_PROFILE_DIR` env or `./baoyu-skills/chrome-profile`)                                                        |
+| `--debug-dir <dir>`                | Write debug artifacts (document.json, markdown.md, page.html, network.json)                                                                                    |
 
 ## Agent Quality Gate
 
@@ -159,9 +165,17 @@ See [references/adapters.md](references/adapters.md) for the adapter catalog (X,
 
 ## Environment Variables
 
-| Variable                   | Description                                                      |
-| -------------------------- | ---------------------------------------------------------------- |
-| `BAOYU_CHROME_PROFILE_DIR` | Chrome user data directory (can also use `--chrome-profile-dir`) |
+| Variable                   | Description                                                                 |
+| -------------------------- | --------------------------------------------------------------------------- |
+| `BAOYU_CHROME_PROFILE_DIR` | Chrome user data directory (can also use `--chrome-profile-dir`)            |
+| `COS_SECRET_ID`            | Tencent Cloud COS SecretId — required for `--upload-cos`                    |
+| `COS_SECRET_KEY`           | Tencent Cloud COS SecretKey — required for `--upload-cos`                   |
+| `COS_BUCKET`               | COS bucket name, e.g. `my-bucket-1250000000` — required for `--upload-cos`  |
+| `COS_REGION`               | COS region, e.g. `ap-guangzhou` — required for `--upload-cos`               |
+| `COS_PREFIX`               | Optional object key prefix (default: `url-to-markdown`)                     |
+| `COS_BASE_URL`             | Optional custom CDN domain for rewritten links (default: COS bucket domain) |
+
+**COS upload**: `--upload-cos` downloads media first, uploads each file to COS under `{COS_PREFIX}/{slug}/{imgs\|videos}/{filename}`, rewrites markdown links to the COS URL, then deletes the local copy. Failed uploads keep their local file and local link. Keep COS credentials in environment variables — never write them into EXTEND.md.
 
 **Troubleshooting**: Chrome not found → use `--browser-path`. Timeout → increase `--timeout`. Login/CAPTCHA → `--wait-for interaction`. Debug → `--debug-dir` to inspect captured HTML and network logs.
 

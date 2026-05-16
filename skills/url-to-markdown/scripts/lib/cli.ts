@@ -19,6 +19,9 @@ Options:
   --json                Alias for --format json
   --adapter <name>      Force an adapter (e.g. x, generic)
   --download-media      Download adapter-reported media into ./imgs and ./videos, then rewrite markdown links
+  --upload-cos          Upload downloaded media to Tencent Cloud COS, rewrite markdown links to COS URLs,
+                        and delete the local copies. Implies --download-media; requires --output and the
+                        COS_SECRET_ID / COS_SECRET_KEY / COS_BUCKET / COS_REGION environment variables
   --media-dir <dir>     Base directory for downloaded media. Defaults to the output directory
   --debug-dir <dir>     Write debug artifacts
   --cdp-url <url>       Reuse an existing Chrome DevTools endpoint
@@ -82,6 +85,7 @@ export function parseArgs(argv: string[]): CliOptions {
     format: "markdown",
     headless: false,
     downloadMedia: false,
+    uploadCos: false,
     waitMode: "none",
     interactionTimeoutMs: 600_000,
     interactionPollIntervalMs: 1_500,
@@ -112,6 +116,10 @@ export function parseArgs(argv: string[]): CliOptions {
     }
     if (value === "--download-media") {
       options.downloadMedia = true;
+      continue;
+    }
+    if (value === "--upload-cos") {
+      options.uploadCos = true;
       continue;
     }
     if (value === "--headless") {
