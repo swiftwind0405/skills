@@ -6,15 +6,16 @@ Fetch any URL and convert to markdown using `baoyu-fetch` CLI (Chrome CDP with s
 
 All settings are read directly from system environment variables.
 
-| Variable                   | Required           | Description                                                        |
-| -------------------------- | ------------------ | ------------------------------------------------------------------ |
-| `BAOYU_CHROME_PROFILE_DIR` | No                 | Chrome user data directory (can also use `--chrome-profile-dir`)   |
-| `COS_SECRET_ID`            | For `--upload-cos` | Tencent Cloud COS SecretId                                         |
-| `COS_SECRET_KEY`           | For `--upload-cos` | Tencent Cloud COS SecretKey                                        |
-| `COS_BUCKET`               | For `--upload-cos` | COS bucket name, e.g. `my-bucket-1250000000`                       |
-| `COS_REGION`               | For `--upload-cos` | COS region, e.g. `ap-guangzhou`                                    |
-| `COS_PREFIX`               | No                 | Object key prefix (default: `url-to-markdown`)                     |
-| `COS_BASE_URL`             | No                 | Custom CDN domain for rewritten links (default: COS bucket domain) |
+| Variable                   | Required           | Description                                                             |
+| -------------------------- | ------------------ | ----------------------------------------------------------------------- |
+| `BAOYU_CHROME_PROFILE_DIR` | No                 | Chrome user data directory (can also use `--chrome-profile-dir`)        |
+| `COS_SECRET_ID`            | For `--upload-cos` | Tencent Cloud COS SecretId                                              |
+| `COS_SECRET_KEY`           | For `--upload-cos` | Tencent Cloud COS SecretKey                                             |
+| `COS_BUCKET`               | For `--upload-cos` | COS bucket name, e.g. `my-bucket-1250000000`                            |
+| `COS_REGION`               | For `--upload-cos` | COS region, e.g. `ap-guangzhou`                                         |
+| `COS_PREFIX`               | No                 | Object key prefix (default: `url-to-markdown`)                          |
+| `COS_ACL`                  | No                 | Object ACL (default: `public-read`; set `default` to use bucket policy) |
+| `COS_BASE_URL`             | No                 | Custom CDN domain for rewritten links (default: COS bucket domain)      |
 
 ## Media Upload to COS
 
@@ -32,11 +33,13 @@ export COS_REGION=ap-guangzhou
 baoyu-fetch <url> --output article.md --upload-cos
 ```
 
-Objects are stored under `{prefix}/{slug}/{imgs|videos}/{filename}`. The prefix
-defaults to `url-to-markdown` and can be fixed with the `COS_PREFIX` env var or
-the `--cos-prefix` flag (the flag wins), e.g. `--cos-prefix articles-collect`
-stores objects under `articles-collect/...`. A failed upload keeps that file
-local and leaves its link unchanged.
+Objects are stored under `{prefix}/{output-slug}/{imgs|videos}/{filename}`. The
+prefix defaults to `url-to-markdown` and can be fixed with the `COS_PREFIX` env
+var or the `--cos-prefix` flag (the flag wins), e.g.
+`--cos-prefix articles-collect` stores objects under `articles-collect/...`.
+Uploaded objects default to `public-read` so rewritten links work on the default
+COS bucket domain; set `COS_ACL=default` to rely on bucket policy or CDN config.
+A failed upload keeps that file local and leaves its link unchanged.
 
 ## Bundled Assets
 

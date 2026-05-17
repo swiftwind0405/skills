@@ -1,8 +1,12 @@
-import { readFile, readdir, rm, rmdir } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { readdir, rm, rmdir, stat } from "node:fs/promises";
 import path from "node:path";
 import COS from "cos-nodejs-sdk-v5";
 import type { Logger } from "../utils/logger";
+import { sanitizeFileSegment } from "./media-utils";
 import type { MediaReplacement } from "./types";
+
+export type CosObjectAcl = "default" | "private" | "public-read" | "public-read-write";
 
 export interface CosConfig {
   secretId: string;
@@ -10,6 +14,7 @@ export interface CosConfig {
   bucket: string;
   region: string;
   prefix: string;
+  acl: CosObjectAcl;
   baseUrl?: string;
 }
 
@@ -37,6 +42,7 @@ const EXT_CONTENT_TYPE: Record<string, string> = {
  *
  * Required: COS_SECRET_ID, COS_SECRET_KEY, COS_BUCKET, COS_REGION
  * Optional: COS_PREFIX (key prefix, default "url-to-markdown"),
+ *           COS_ACL (object ACL, default "public-read"),
  *           COS_BASE_URL (custom CDN domain; otherwise the default COS domain is used)
  */
 export function readCosConfigFromEnv(env: NodeJS.ProcessEnv = process.env): CosConfig | null {
@@ -48,10 +54,22 @@ export function readCosConfigFromEnv(env: NodeJS.ProcessEnv = process.env): CosC
     return null;
   }
 
-  const prefix = (env.COS_PREFIX ?? "url-to-markdown").trim().replace(/^\/+|\/+$/g, "");
+  const prefix = env.COS_PREFIX?.trim().replace(/^\/+|\/+$/g, "") || "url-to-markdown";
+  const acl = readCosObjectAcl(env.COS_ACL);
   const baseUrl = env.COS_BASE_URL?.trim().replace(/\/+$/, "");
 
-  return { secretId, secretKey, bucket, region, prefix, baseUrl: baseUrl || undefined };
+  return { secretId, secretKey, bucket, region, prefix, acl, baseUrl: baseUrl || undefined };
+}
+
+function readCosObjectAcl(raw: string | undefined): CosObjectAcl {
+  const value = raw?.trim();
+  if (!value) {
+    return "public-read";
+  }
+  if (value === "default" || value === "private" || value === "public-read" || value === "public-read-write") {
+    return value;
+  }
+  throw new Error("COS_ACL must be one of: default, private, public-read, public-read-write");
 }
 
 function contentTypeForFile(filePath: string): string | undefined {
@@ -67,16 +85,20 @@ function buildObjectUrl(config: CosConfig, key: string): string {
   return `https://${config.bucket}.cos.${config.region}.myqcloud.com/${encodedKey}`;
 }
 
-/**
- * Derive a COS object key from a downloaded file's absolute path.
- * Downloaded media lives at `{base}/{slug}/{imgs|videos}/{filename}`,
- * so the key keeps the slug + kind directory as a namespace to avoid collisions.
- */
-function deriveObjectKey(prefix: string, absolutePath: string): string {
-  const filename = path.basename(absolutePath);
-  const kindDir = path.basename(path.dirname(absolutePath));
-  const slugDir = path.basename(path.dirname(path.dirname(absolutePath)));
-  return [prefix, slugDir, kindDir, filename]
+function outputNamespace(outputPath: string): string {
+  const absoluteOutputPath = path.resolve(outputPath);
+  const fileStem = sanitizeFileSegment(path.parse(absoluteOutputPath).name);
+  const parentStem = sanitizeFileSegment(path.basename(path.dirname(absoluteOutputPath)));
+  if (parentStem && parentStem === fileStem) {
+    return parentStem;
+  }
+  return fileStem || parentStem || "article";
+}
+
+function deriveObjectKey(prefix: string, outputPath: string, replacement: MediaReplacement): string {
+  const filename = path.basename(replacement.absolutePath);
+  const kindDir = replacement.kind === "video" ? "videos" : "imgs";
+  return [prefix, outputNamespace(outputPath), kindDir, filename]
     .filter((segment) => Boolean(segment) && segment !== "." && segment !== path.sep)
     .join("/");
 }
@@ -115,6 +137,7 @@ async function removeLocalFiles(files: string[], log: Logger): Promise<void> {
 export async function uploadReplacementsToCos(
   replacements: MediaReplacement[],
   config: CosConfig,
+  outputPath: string,
   log: Logger,
 ): Promise<MediaReplacement[]> {
   if (replacements.length === 0) {
@@ -127,16 +150,19 @@ export async function uploadReplacementsToCos(
 
   for (const item of replacements) {
     try {
-      const body = await readFile(item.absolutePath);
-      const key = deriveObjectKey(config.prefix, item.absolutePath);
+      const fileStat = await stat(item.absolutePath);
+      const key = deriveObjectKey(config.prefix, outputPath, item);
       await new Promise<void>((resolve, reject) => {
+        const body = createReadStream(item.absolutePath);
         cos.putObject(
           {
             Bucket: config.bucket,
             Region: config.region,
             Key: key,
             Body: body,
+            ContentLength: fileStat.size,
             ContentType: contentTypeForFile(item.absolutePath),
+            ...(config.acl === "default" ? {} : { ACL: config.acl }),
           },
           (error) => (error ? reject(error) : resolve()),
         );

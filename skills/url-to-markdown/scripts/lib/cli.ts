@@ -81,6 +81,14 @@ function normalizeOutputFormat(raw: string): OutputFormat {
   throw new Error(`Invalid output format: ${raw}. Expected markdown or json.`);
 }
 
+function readOptionValue(args: string[], index: number, option: string): string {
+  const next = args[index + 1];
+  if (!next || next.startsWith("-")) {
+    throw new Error(`${option} requires a value`);
+  }
+  return next;
+}
+
 export function parseArgs(argv: string[]): CliOptions {
   const options: CliOptions = {
     format: "markdown",
@@ -124,7 +132,7 @@ export function parseArgs(argv: string[]): CliOptions {
       continue;
     }
     if (value === "--cos-prefix") {
-      options.cosPrefix = args[index + 1];
+      options.cosPrefix = readOptionValue(args, index, value);
       index += 1;
       continue;
     }

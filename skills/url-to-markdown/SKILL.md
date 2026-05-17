@@ -173,17 +173,18 @@ See [references/adapters.md](references/adapters.md) for the adapter catalog (X,
 
 ## Environment Variables
 
-| Variable                   | Description                                                                 |
-| -------------------------- | --------------------------------------------------------------------------- |
-| `BAOYU_CHROME_PROFILE_DIR` | Chrome user data directory (can also use `--chrome-profile-dir`)            |
-| `COS_SECRET_ID`            | Tencent Cloud COS SecretId — required for `--upload-cos`                    |
-| `COS_SECRET_KEY`           | Tencent Cloud COS SecretKey — required for `--upload-cos`                   |
-| `COS_BUCKET`               | COS bucket name, e.g. `my-bucket-1250000000` — required for `--upload-cos`  |
-| `COS_REGION`               | COS region, e.g. `ap-guangzhou` — required for `--upload-cos`               |
-| `COS_PREFIX`               | Optional object key prefix (default: `url-to-markdown`)                     |
-| `COS_BASE_URL`             | Optional custom CDN domain for rewritten links (default: COS bucket domain) |
+| Variable                   | Description                                                                      |
+| -------------------------- | -------------------------------------------------------------------------------- |
+| `BAOYU_CHROME_PROFILE_DIR` | Chrome user data directory (can also use `--chrome-profile-dir`)                 |
+| `COS_SECRET_ID`            | Tencent Cloud COS SecretId — required for `--upload-cos`                         |
+| `COS_SECRET_KEY`           | Tencent Cloud COS SecretKey — required for `--upload-cos`                        |
+| `COS_BUCKET`               | COS bucket name, e.g. `my-bucket-1250000000` — required for `--upload-cos`       |
+| `COS_REGION`               | COS region, e.g. `ap-guangzhou` — required for `--upload-cos`                    |
+| `COS_PREFIX`               | Optional object key prefix (default: `url-to-markdown`)                          |
+| `COS_ACL`                  | Optional object ACL (default: `public-read`; set `default` to use bucket policy) |
+| `COS_BASE_URL`             | Optional custom CDN domain for rewritten links (default: COS bucket domain)      |
 
-**COS upload**: `--upload-cos` downloads media first, uploads each file to COS under `{COS_PREFIX}/{slug}/{imgs\|videos}/{filename}`, rewrites markdown links to the COS URL, then deletes the local copy. Failed uploads keep their local file and local link. Keep COS credentials in environment variables — never write them into EXTEND.md.
+**COS upload**: `--upload-cos` validates COS config before capture, downloads media, uploads each file to COS under `{COS_PREFIX}/{output-slug}/{imgs\|videos}/{filename}`, rewrites markdown links to the COS URL, then deletes the local copy. Uploaded objects default to `public-read` so rewritten links work on the default COS bucket domain; set `COS_ACL=default` to rely on bucket policy or CDN config. Failed uploads keep their local file and local link. Keep COS credentials in environment variables — never write them into EXTEND.md.
 
 **Troubleshooting**: Chrome not found → use `--browser-path`. Timeout → increase `--timeout`. Login/CAPTCHA → `--wait-for interaction`. Debug → `--debug-dir` to inspect captured HTML and network logs.
 

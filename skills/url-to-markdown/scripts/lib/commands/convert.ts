@@ -12,7 +12,7 @@ import type { ExtractedDocument } from "../extract/document";
 import { renderMarkdown } from "../extract/markdown-renderer";
 import { downloadMediaAssets } from "../media/default-downloader";
 import { rewriteMarkdownMediaLinks } from "../media/markdown-media";
-import { readCosConfigFromEnv, uploadReplacementsToCos } from "../media/cos-uploader";
+import { readCosConfigFromEnv, uploadReplacementsToCos, type CosConfig } from "../media/cos-uploader";
 import { createLogger } from "../utils/logger";
 import { normalizeUrl } from "../utils/url";
 import type {
@@ -379,6 +379,23 @@ export async function runConvertCommand(options: ConvertCommandOptions): Promise
     throw new Error("--download-media requires --output so media paths can be rewritten relative to the saved output file");
   }
 
+  let cosConfig: CosConfig | null = null;
+  if (options.uploadCos) {
+    cosConfig = readCosConfigFromEnv();
+    if (!cosConfig) {
+      throw new Error(
+        "--upload-cos requires COS_SECRET_ID, COS_SECRET_KEY, COS_BUCKET, and COS_REGION environment variables to be set",
+      );
+    }
+    if (options.cosPrefix !== undefined) {
+      const prefixOverride = options.cosPrefix.trim().replace(/^\/+|\/+$/g, "");
+      if (!prefixOverride) {
+        throw new Error("--cos-prefix requires a non-empty path");
+      }
+      cosConfig.prefix = prefixOverride;
+    }
+  }
+
   const url = normalizeUrl(options.url);
   let runtime = await openRuntime(options, options.waitMode !== "none", Boolean(options.debugDir));
   const logger = createLogger(Boolean(options.debugDir));
@@ -534,17 +551,7 @@ export async function runConvertCommand(options: ConvertCommandOptions): Promise
 
       let replacements = downloadResult.replacements;
       if (options.uploadCos && replacements.length > 0) {
-        const cosConfig = readCosConfigFromEnv();
-        if (!cosConfig) {
-          throw new Error(
-            "--upload-cos requires COS_SECRET_ID, COS_SECRET_KEY, COS_BUCKET, and COS_REGION environment variables to be set",
-          );
-        }
-        const prefixOverride = options.cosPrefix?.trim().replace(/^\/+|\/+$/g, "");
-        if (prefixOverride) {
-          cosConfig.prefix = prefixOverride;
-        }
-        replacements = await uploadReplacementsToCos(replacements, cosConfig, logger);
+        replacements = await uploadReplacementsToCos(replacements, cosConfig!, options.output, logger);
         downloadResult = { ...downloadResult, replacements };
       }
 
