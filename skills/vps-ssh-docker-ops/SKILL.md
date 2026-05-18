@@ -1,8 +1,6 @@
 ---
 name: vps-ssh-docker-ops
 description: Use when operating the user's VPS servers through SSH aliases `vps-cc` or `vps-dmit`: outage triage, SSH hardening, Docker service deploy/remove/cleanup, abuse investigation, or VPS residue cleanup.
-metadata:
-  version: "2.0.0"
 ---
 
 # VPS SSH Docker Ops
@@ -11,12 +9,32 @@ Prefix your first line with 🥷 inline, not as its own paragraph.
 
 Use this skill for direct work on the user's VPS servers.
 
+## Preferences (EXTEND.md)
+
+Check EXTEND.md in priority order — the first one found wins:
+
+| Priority | Path                                                             | Scope     |
+| -------- | ---------------------------------------------------------------- | --------- |
+| 1        | `.vps-ssh-docker-ops/EXTEND.md`                                  | Project   |
+| 2        | `${XDG_CONFIG_HOME:-$HOME/.config}/vps-ssh-docker-ops/EXTEND.md` | XDG       |
+| 3        | `$HOME/.vps-ssh-docker-ops/EXTEND.md`                            | User home |
+
+If none found, fall back to environment variables or ask the user.
+
+**EXTEND.md supports**: host definitions (alias, IP, user, key path, notes).
+
 ## Known Hosts
 
-| Alias | IP | User | Key | Notes |
-|---|---|---|---|---|
-| `vps-cc` | 142.171.39.167 | root | `~/.ssh/id_vps` | CC 机房 |
-| `vps-dmit` | 69.63.201.37 | root | `~/.ssh/id_ed25519_dmit` | DMIT 机房 |
+Host definitions are loaded from EXTEND.md (preferred) or the environment variables below.
+
+| Variable        | Description                                                    |
+| --------------- | -------------------------------------------------------------- |
+| `VPS_CC_HOST`   | IP or hostname for CC alias (SSH alias `vps-cc`)               |
+| `VPS_CC_USER`   | SSH user for CC (default: `root`)                              |
+| `VPS_CC_KEY`    | SSH identity file for CC (default: `~/.ssh/id_vps`)            |
+| `VPS_DMIT_HOST` | IP or hostname for DMIT alias (SSH alias `vps-dmit`)           |
+| `VPS_DMIT_USER` | SSH user for DMIT (default: `root`)                            |
+| `VPS_DMIT_KEY`  | SSH identity file for DMIT (default: `~/.ssh/id_ed25519_dmit`) |
 
 When the user says "VPS" without specifying which one, ask which host they mean. If context makes it obvious (e.g. a service only runs on one), state your assumption and proceed.
 

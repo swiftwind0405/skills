@@ -24,6 +24,16 @@ Load and follow these skills first:
 
 These skills are sibling directories of this one. `{baseDir}` = this SKILL.md's directory path; companion scripts are referenced as `{baseDir}/../<skill>/scripts/...`.
 
+**Prerequisite check**: Before starting the workflow, verify all three companion skill directories exist:
+
+```bash
+for skill in url-to-markdown articles-translates markdown-to-html; do
+  [ -d "{baseDir}/../$skill" ] || echo "MISSING companion skill: $skill"
+done
+```
+
+If any companion skill is missing, stop and tell the user which skill(s) need to be installed alongside this one.
+
 ## Default assumptions
 
 - Target language: Chinese (`zh-CN`) unless the user specifies otherwise.

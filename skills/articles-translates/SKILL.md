@@ -236,6 +236,8 @@ After the final translation is written, do a lightweight image-language pass:
 
 Reminder format (use whatever image syntax the article already uses — standard markdown or wikilink):
 
+<!-- Paths below are illustrative; actual values come from the translated article -->
+
 ```text
 Possible image localization needed:
 - ![example cover](attachments/example-cover.png): likely still contains source-language text while the article is now in target language

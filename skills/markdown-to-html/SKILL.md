@@ -191,7 +191,7 @@ ${BUN_X} {baseDir}/scripts/main.ts article.md --title "My Article"
 ## Supported Markdown Features
 
 | Feature     | Syntax                                                                             |
-| ----------- | ---------------------------------------------------------------------------------- | ------------ |
+| ----------- | ---------------------------------------------------------------------------------- |
 | Headings    | `# H1` to `###### H6`                                                              |
 | Bold/Italic | `**bold**`, `*italic*`                                                             |
 | Code blocks | ` ```lang ` with syntax highlighting                                               |
@@ -203,7 +203,7 @@ ${BUN_X} {baseDir}/scripts/main.ts article.md --title "My Article"
 | Lists       | `-` unordered, `1.` ordered                                                        |
 | Alerts      | `> [!NOTE]`, `> [!WARNING]`, etc.                                                  |
 | Footnotes   | `[^1]` references                                                                  |
-| Ruby text   | `{base                                                                             | annotation}` |
+| Ruby text   | `{base \| annotation}`                                                             |
 | Mermaid     | ` ```mermaid ` diagrams                                                            |
 | PlantUML    | ` ```plantuml ` diagrams                                                           |
 

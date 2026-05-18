@@ -25,11 +25,13 @@ bash scripts/link-skills.sh
 - [huntly-manager](./skills/huntly-manager/)
 - [jenkins-job-trigger](./skills/jenkins-job-trigger/)
 - [markdown-to-html](./skills/markdown-to-html/)
+- [mcp-builder](./skills/mcp-builder/)
 - [obsidian-cli](./skills/obsidian-cli/)
 - [tdl](./skills/tdl/)
 - [url-to-markdown](./skills/url-to-markdown/)
 - [url-translate-html](./skills/url-translate-html/)
 - [vikunja](./skills/vikunja/)
+- [vps-ssh-docker-ops](./skills/vps-ssh-docker-ops/)
 
 Each skill has its own README with details and configuration.
 
