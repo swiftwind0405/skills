@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+	cat >&2 <<'USAGE'
+Usage:
+  tmux-send-and-capture -t TARGET [-n LINES] [--codex-queue] [--] MESSAGE...
+  tmux-send-and-capture -t TARGET [-n LINES] [--codex-queue] --stdin
+
+Send text to a tmux pane, send C-m separately, then print the last N lines
+captured from that pane.
+
+Options:
+  -t, --target TARGET     tmux target pane, window, or session (required)
+  -n, --lines LINES       number of lines to capture after sending (default: 80)
+      --enter-count NUM   number of separate C-m sends after text (default: 1)
+      --enter-delay SEC   delay between repeated C-m sends (default: 0.5)
+      --codex-queue       shortcut for --enter-count 2, useful while Codex is busy
+      --stdin             read the message from stdin
+  -h, --help              show this help
+
+Examples:
+  tmux-send-and-capture -t project-shared:coordination.0 -n 60 "status please"
+  tmux-send-and-capture -t project-agent:main.0 --codex-queue "queue this after current task"
+  printf '%s\n' "Run the smoke tests" | tmux-send-and-capture -t project-codex:main.0 --stdin
+USAGE
+}
+
+target=""
+lines=80
+enter_count=1
+enter_delay=0.5
+read_stdin=0
+args=()
+
+while (($#)); do
+	case "$1" in
+		-t|--target)
+			[[ $# -ge 2 ]] || { echo "Missing value for $1" >&2; usage; exit 2; }
+			target="$2"
+			shift 2
+			;;
+		-n|--lines)
+			[[ $# -ge 2 ]] || { echo "Missing value for $1" >&2; usage; exit 2; }
+			lines="$2"
+			shift 2
+			;;
+		--enter-count)
+			[[ $# -ge 2 ]] || { echo "Missing value for $1" >&2; usage; exit 2; }
+			enter_count="$2"
+			shift 2
+			;;
+		--enter-delay)
+			[[ $# -ge 2 ]] || { echo "Missing value for $1" >&2; usage; exit 2; }
+			enter_delay="$2"
+			shift 2
+			;;
+		--codex-queue)
+			enter_count=2
+			shift
+			;;
+		--stdin)
+			read_stdin=1
+			shift
+			;;
+		-h|--help)
+			usage
+			exit 0
+			;;
+		--)
+			shift
+			args+=("$@")
+			break
+			;;
+		-*)
+			echo "Unknown option: $1" >&2
+			usage
+			exit 2
+			;;
+		*)
+			args+=("$1")
+			shift
+			;;
+	esac
+done
+
+[[ -n "$target" ]] || { echo "Missing required --target" >&2; usage; exit 2; }
+[[ "$lines" =~ ^[0-9]+$ ]] || { echo "--lines must be a non-negative integer" >&2; exit 2; }
+[[ "$enter_count" =~ ^[1-9][0-9]*$ ]] || { echo "--enter-count must be a positive integer" >&2; exit 2; }
+[[ "$enter_delay" =~ ^[0-9]+([.][0-9]+)?$ ]] || { echo "--enter-delay must be a non-negative number" >&2; exit 2; }
+
+if ((read_stdin)); then
+	if ((${#args[@]})); then
+		echo "Pass either MESSAGE arguments or --stdin, not both" >&2
+		exit 2
+	fi
+	message="$(cat)"
+else
+	if ((${#args[@]} == 0)); then
+		echo "Missing MESSAGE" >&2
+		usage
+		exit 2
+	fi
+	message="${args[*]}"
+fi
+
+tmux display-message -p -t "$target" '#{pane_id}' >/dev/null 2>&1 || {
+	echo "tmux target not found: $target" >&2
+	exit 1
+}
+
+tmux send-keys -l -t "$target" -- "$message"
+for ((i = 0; i < enter_count; i++)); do
+	tmux send-keys -t "$target" C-m
+	if ((i + 1 < enter_count)); then
+		sleep "$enter_delay"
+	fi
+done
+tmux capture-pane -pt "$target" -S "-$lines"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tmux"
+  short_description: "Run agent commands in tmux sessions"
+  default_prompt: "Use $tmux to run this command in a named tmux session."
