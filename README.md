@@ -24,6 +24,7 @@ bash scripts/link-skills.sh
 - [format-markdown](./skills/format-markdown/)
 - [huntly-manager](./skills/huntly-manager/)
 - [jenkins-job-trigger](./skills/jenkins-job-trigger/)
+- [jira-cli](./skills/jira-cli/)
 - [markdown-to-html](./skills/markdown-to-html/)
 - [mcp-builder](./skills/mcp-builder/)
 - [obsidian-cli](./skills/obsidian-cli/)
