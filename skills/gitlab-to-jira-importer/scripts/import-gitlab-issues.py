@@ -35,9 +35,20 @@ JIRA_BOARD_ID = "45"
 
 def get_jira_token() -> str:
     """从 macOS Keychain 获取 Jira token"""
+    # 先获取用户名
     result = subprocess.run(
-        ["security", "find-generic-password", "-s", "jira-cli", "-a", "$(jira me)", "-w"],
-        capture_output=True, text=True, shell=True
+        ["jira", "me"],
+        capture_output=True, text=True
+    )
+    if result.returncode != 0:
+        print("❌ 无法获取 Jira 用户，请确保 jira-cli 已配置", file=sys.stderr)
+        sys.exit(1)
+    jira_user = result.stdout.strip()
+    
+    # 从 keychain 获取 token
+    result = subprocess.run(
+        ["security", "find-generic-password", "-s", "jira-cli", "-a", jira_user, "-w"],
+        capture_output=True, text=True
     )
     if result.returncode != 0:
         print("❌ 无法获取 Jira token，请确保已配置 jira-cli", file=sys.stderr)
