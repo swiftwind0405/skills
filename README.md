@@ -24,6 +24,7 @@ bash scripts/link-skills.sh
 - [jenkins-job-trigger](./skills/jenkins-job-trigger/)
 - [jira-cli](./skills/jira-cli/)
 - [markdown-to-html](./skills/markdown-to-html/)
+- [md-page-deploy](./skills/md-page-deploy/)
 - [mcp-builder](./skills/mcp-builder/)
 - [obsidian-cli](./skills/obsidian-cli/)
 - [tdl](./skills/tdl/)
