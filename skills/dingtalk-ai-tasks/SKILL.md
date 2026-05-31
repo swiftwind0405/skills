@@ -15,7 +15,7 @@ requirements:
 
 ## 使用方法
 
-### 方式 1: 直接运行脚本（推荐）
+### 直接运行脚本
 
 ```bash
 # 显示所有分配给你的 AI 任务
@@ -38,26 +38,6 @@ python3 ~/.hermes/skills/dingtalk-ai-tasks/scripts/ai-tasks.py --testing
 
 # 显示所有 AI 任务（不只是你的）
 python3 ~/.hermes/skills/dingtalk-ai-tasks/scripts/ai-tasks.py --all
-```
-
-### 方式 2: 添加 Shell 别名
-
-在 `~/.zshrc` 或 `~/.bashrc` 中添加：
-
-```bash
-alias ai-tasks='python3 ~/.hermes/skills/dingtalk-ai-tasks/scripts/ai-tasks.py'
-alias ai-p0='python3 ~/.hermes/skills/dingtalk-ai-tasks/scripts/ai-tasks.py --p0'
-alias ai-p1='python3 ~/.hermes/skills/dingtalk-ai-tasks/scripts/ai-tasks.py --p1'
-alias ai-p2='python3 ~/.hermes/skills/dingtalk-ai-tasks/scripts/ai-tasks.py --p2'
-alias ai-todo='python3 ~/.hermes/skills/dingtalk-ai-tasks/scripts/ai-tasks.py --todo'
-alias ai-testing='python3 ~/.hermes/skills/dingtalk-ai-tasks/scripts/ai-tasks.py --testing'
-```
-
-然后可以直接使用：
-```bash
-ai-tasks      # 显示所有分配给你的任务
-ai-p0         # 只显示 P0 任务
-ai-todo       # 只显示未开始/开发中的任务
 ```
 
 ### 参数说明
