@@ -1,23 +1,22 @@
 # jira-cli
 
-Operate Caidao's private Jira instance via the installed
-[ankitpokhrel/jira-cli](https://github.com/ankitpokhrel/jira-cli) command.
+通过已安装的 [ankitpokhrel/jira-cli](https://github.com/ankitpokhrel/jira-cli) 命令操作财道私有 Jira 实例。
 
-## Configuration
+## 配置
 
-| Variable           | Required | Description                                                         |
-| ------------------ | -------- | ------------------------------------------------------------------- |
-| `JIRA_API_TOKEN`   | Yes      | Jira password for basic auth, or Personal Access Token if available |
-| `JIRA_AUTH_TYPE`   | No       | Set to `bearer` when using a Personal Access Token                  |
-| `JIRA_CONFIG_FILE` | No       | Alternate config path for multiple Jira contexts                    |
+| 变量               | 必填 | 说明                                                    |
+| ------------------ | ---- | ------------------------------------------------------- |
+| `JIRA_API_TOKEN`   | 是   | basic auth 使用的 Jira 密码；如可用，也可用个人访问令牌 |
+| `JIRA_AUTH_TYPE`   | 否   | 使用个人访问令牌时设置为 `bearer`                       |
+| `JIRA_CONFIG_FILE` | 否   | 多 Jira 上下文使用的替代配置路径                        |
 
-Default server:
+默认服务器：
 
 ```text
 http://jira.caidaocloud.com:8080/
 ```
 
-First-time local setup with username/password:
+首次本地使用用户名/密码配置：
 
 ```bash
 export JIRA_API_TOKEN="<jira-password>"
@@ -32,11 +31,9 @@ jira init \
   --project "<default-project-key>"
 ```
 
-If `jira init` fails during metadata generation after login succeeds, use a
-manual config with `installation: Local` (capital `L`) and store the password in
-macOS Keychain under service `jira-cli`.
+如果登录成功后 `jira init` 在生成元数据时失败，请使用手动配置，并将 `installation` 设置为 `Local`（大写 `L`），同时把密码存入 macOS Keychain 的 `jira-cli` 服务下。
 
-## Common Commands
+## 常用命令
 
 ```bash
 jira me
@@ -49,15 +46,13 @@ jira issue comment add ISSUE-123 "Comment" --no-input
 jira issue move ISSUE-123 "In Progress"
 ```
 
-## RapidBoard Planning Notes
+## RapidBoard 计划页说明
 
-For Jira 8.3 RapidBoard pages, use the page's GreenHopper planning endpoint when
-the CLI sprint list does not match the web UI. Example for `2.0研发看板`
-(`rapidView=45`):
+对于 Jira 8.3 的 RapidBoard 页面，当 CLI 返回的 sprint 列表与 Web UI 不一致时，使用页面对应的 GreenHopper planning endpoint。例如 `2.0研发看板`（`rapidView=45`）：
 
 ```bash
 curl -fsS -u "$(jira me):$(security find-generic-password -s jira-cli -a "$(jira me)" -w)" \
   "http://jira.caidaocloud.com:8080/rest/greenhopper/1.0/xboard/plan/backlog/data.json?rapidViewId=45&selectedProjectKey=DEV"
 ```
 
-The sprint names may be `Dev Sprint ...` rather than uppercase `DEV Sprint ...`.
+sprint 名称可能是 `Dev Sprint ...`，而不是全大写的 `DEV Sprint ...`。

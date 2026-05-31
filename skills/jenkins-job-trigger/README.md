@@ -1,18 +1,18 @@
 # jenkins-job-trigger
 
-Trigger Jenkins jobs via a bundled Python script that authenticates with username + API token, handles CSRF crumb, supports build parameters, and can wait for queue/build completion.
+通过内置 Python 脚本触发 Jenkins 任务。脚本使用用户名 + API token 认证，处理 CSRF crumb，支持构建参数，并可等待队列/构建完成。
 
-## Configuration
+## 配置
 
-| Variable              | Required | Description                                                       |
-| --------------------- | -------- | ----------------------------------------------------------------- |
-| `JENKINS_URL`         | Yes      | Jenkins base URL, e.g. `http://jenkins.example.com:8080`          |
-| `JENKINS_USER`        | Yes      | Jenkins username                                                  |
-| `JENKINS_TOKEN`       | Yes      | Jenkins API token (not password)                                  |
-| `JOB_PATH`            | No       | Default job path, e.g. `job/example-folder/job/example-web-build` |
-| `JENKINS_JOB_ALIASES` | No       | Path to JSON file mapping friendly names → job paths              |
+| 变量                  | 必填 | 说明                                                          |
+| --------------------- | ---- | ------------------------------------------------------------- |
+| `JENKINS_URL`         | 是   | Jenkins 基础 URL，例如 `http://jenkins.example.com:8080`      |
+| `JENKINS_USER`        | 是   | Jenkins 用户名                                                |
+| `JENKINS_TOKEN`       | 是   | Jenkins API token（不是密码）                                 |
+| `JOB_PATH`            | 否   | 默认任务路径，例如 `job/example-folder/job/example-web-build` |
+| `JENKINS_JOB_ALIASES` | 否   | JSON 文件路径，用于将易记名称映射到任务路径                   |
 
-### Job Aliases Format
+### 任务别名格式
 
 ```json
 {
@@ -21,7 +21,7 @@ Trigger Jenkins jobs via a bundled Python script that authenticates with usernam
 }
 ```
 
-## Bundled Assets
+## 内置资源
 
-- `references/` — Jenkins API notes
-- `scripts/` — `jenkins_trigger.py`
+- `references/`：Jenkins API 说明
+- `scripts/`：`jenkins_trigger.py`

@@ -1,12 +1,12 @@
 # articles-translates
 
-Three-mode article translator: quick (direct), normal (analyze then translate), and refined (analyze, translate, review, polish). Supports custom glossaries and terminology consistency via `EXTEND.md`.
+三模式文章翻译技能：quick（直接翻译）、normal（先分析再翻译）和 refined（分析、翻译、审校、润色）。支持通过 `EXTEND.md` 配置自定义术语表和术语一致性。
 
-## Configuration
+## 配置
 
-No environment variables required.
+无需环境变量。
 
-## Bundled Assets
+## 内置资源
 
-- `references/` — translation guidelines, glossary format
-- `scripts/` — translation helper scripts
+- `references/`：翻译指南、术语表格式
+- `scripts/`：翻译辅助脚本

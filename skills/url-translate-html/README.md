@@ -1,11 +1,11 @@
 # url-translate-html
 
-Convert a URL to Markdown, produce bilingual original/Chinese Markdown in a vertical comparison format, and render it to styled HTML.
+将 URL 转换为 Markdown，生成原文/中文的纵向对照双语 Markdown，并渲染为带样式的 HTML。
 
-## Configuration
+## 配置
 
-No environment variables required. Depends on `url-to-markdown` and `markdown-to-html` skills.
+无需环境变量。依赖 `url-to-markdown` 和 `markdown-to-html` 两个技能。
 
-## Bundled Assets
+## 内置资源
 
-None.
+无。

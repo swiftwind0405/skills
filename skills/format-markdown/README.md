@@ -1,12 +1,12 @@
 # format-markdown
 
-Formats plain text or markdown files with frontmatter, titles, summaries, headings, bold, lists, and code blocks. Includes CJK typography fixes. Outputs to `{filename}-formatted.md`.
+将纯文本或 Markdown 文件整理为带 frontmatter、标题、摘要、层级标题、加粗、列表和代码块的规范 Markdown。包含中日韩文字排版修正。输出到 `{filename}-formatted.md`。
 
-## Configuration
+## 配置
 
-No environment variables required.
+无需环境变量。
 
-## Bundled Assets
+## 内置资源
 
-- `references/` — formatting rules and examples
-- `scripts/` — formatting helper scripts
+- `references/`：格式化规则与示例
+- `scripts/`：格式化辅助脚本

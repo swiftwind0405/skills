@@ -1,11 +1,11 @@
 # tdl
 
-Telegram Downloader. Handles login to Telegram, downloads media files (images, videos) from chats or messages, with filtering by file type and download management via the `tdl` CLI.
+Telegram Downloader。通过 `tdl` CLI 登录 Telegram，从聊天或消息中下载媒体文件（图片、视频），并支持按文件类型过滤和下载管理。
 
-## Configuration
+## 配置
 
-No environment variables required. The `tdl` CLI must be installed on the system.
+无需环境变量。系统中必须已安装 `tdl` CLI。
 
-## Bundled Assets
+## 内置资源
 
-- `scripts/` — `tdl` wrapper scripts
+- `scripts/`：`tdl` 包装脚本

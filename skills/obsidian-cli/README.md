@@ -1,11 +1,11 @@
 # obsidian-cli
 
-Read, create, and manage Obsidian vault notes via the built-in `obsidian` CLI. Follows PARA directory structure.
+通过内置 `obsidian` CLI 读取、创建和管理 Obsidian vault 笔记。遵循 PARA 目录结构。
 
-## Configuration
+## 配置
 
-No environment variables required.
+无需环境变量。
 
-## Bundled Assets
+## 内置资源
 
-None — uses the system-installed `obsidian` CLI.
+无。使用系统中已安装的 `obsidian` CLI。

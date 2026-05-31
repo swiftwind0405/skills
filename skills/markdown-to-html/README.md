@@ -1,11 +1,11 @@
 # markdown-to-html
 
-Converts Markdown to styled HTML with WeChat-compatible themes. Supports code highlighting, math (KaTeX/Temml), PlantUML, footnotes, alerts, infographics, and optional bottom citations for external links.
+将 Markdown 转换为带样式的 HTML，并提供兼容微信公众号的主题。支持代码高亮、数学公式（KaTeX/Temml）、PlantUML、脚注、提示块、信息图，以及可选的外链底部引用。
 
-## Configuration
+## 配置
 
-No environment variables required.
+无需环境变量。
 
-## Bundled Assets
+## 内置资源
 
-- `scripts/` — `markdown-to-html.js` and dependencies
+- `scripts/`：`markdown-to-html.js` 及其依赖

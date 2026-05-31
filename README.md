@@ -1,24 +1,22 @@
 # Agent Skills
 
-[简体中文](./README.zh.md)
+面向本地工程工作流的自定义 Agent Skills 集合。
 
-A curated set of custom Agent Skills for local engineering workflows.
+## 使用方式
 
-## Usage
-
-Add as a skill source:
+作为技能源安装：
 
 ```bash
 bunx skills add https://github.com/swiftwind0405/skills
 ```
 
-Or symlink local folders into `~/.hermes/skills/`:
+或将本地目录软链到 `~/.hermes/skills/`：
 
 ```bash
 bash scripts/link-skills.sh
 ```
 
-## Skills
+## 技能列表
 
 - [articles-translates](./skills/articles-translates/)
 - [format-markdown](./skills/format-markdown/)
@@ -34,23 +32,23 @@ bash scripts/link-skills.sh
 - [vikunja](./skills/vikunja/)
 - [vps-ssh-docker-ops](./skills/vps-ssh-docker-ops/)
 
-Each skill has its own README with details and configuration.
+每个技能目录内有独立的 README 说明用途与配置。
 
-## Layout
+## 目录结构
 
 ```text
 skills/
   <skill-name>/
     SKILL.md
-    README.md      # skill overview & config
+    README.md      # 技能概览与配置说明
     references/
     scripts/
 ```
 
-## Development
+## 开发维护
 
 ```bash
 bun install
-bun run check:md    # validate Markdown formatting
-bun run format:md   # auto-fix Markdown formatting
+bun run check:md    # 检查 Markdown 格式
+bun run format:md   # 自动修复 Markdown 格式
 ```
