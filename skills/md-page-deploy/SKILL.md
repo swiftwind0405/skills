@@ -7,29 +7,24 @@ description: Turn a user-provided Markdown file or pasted Markdown into a readab
 
 Create a static, readable HTML page from Markdown, or deploy an existing HTML page, preview it locally, and deploy it only after the user approves the preview.
 
-Default production hosting is Cloudflare Pages with GitHub integration from the standalone docs repository. The legacy VPS/Caddy rsync path remains available only when explicitly requested.
+Production hosting is Cloudflare Pages with GitHub integration from the standalone docs repository.
 
 ## Defaults
 
-| Setting             | Default                                            | Environment override       |
-| ------------------- | -------------------------------------------------- | -------------------------- |
-| Docs repo path      | `/Users/stanley/Workspace/main/stanley-docs-pages` | `DEPLOY_PAGES_REPO`        |
-| GitHub repo         | `swiftwind0405/stanley-docs-pages`                 | `DEPLOY_PAGES_GITHUB_REPO` |
-| Source directory    | `pages`                                            | `DEPLOY_PAGES_SOURCE`      |
-| Build directory     | `.deploy/cloudflare-pages`                         | `DEPLOY_PAGES_BUILD_DIR`   |
-| Public domain       | `docs.stanleywind.org`                             | `DEPLOY_PAGES_DOMAIN`      |
-| Cloudflare project  | `stanley-docs-github`                              | `DEPLOY_PAGES_CF_PROJECT`  |
-| Legacy SSH host     | `vps-dmit`                                         | `DEPLOY_PAGES_REMOTE`      |
-| Legacy remote root  | `/srv/pages`                                       | `DEPLOY_PAGES_ROOT`        |
-| Legacy remote owner | `root:root`                                        | `DEPLOY_PAGES_OWNER`       |
+| Setting            | Default                                            | Environment override       |
+| ------------------ | -------------------------------------------------- | -------------------------- |
+| Docs repo path     | `/Users/stanley/Workspace/main/stanley-docs-pages` | `DEPLOY_PAGES_REPO`        |
+| GitHub repo        | `swiftwind0405/stanley-docs-pages`                 | `DEPLOY_PAGES_GITHUB_REPO` |
+| Source directory   | `pages`                                            | `DEPLOY_PAGES_SOURCE`      |
+| Build directory    | `.deploy/cloudflare-pages`                         | `DEPLOY_PAGES_BUILD_DIR`   |
+| Public domain      | `docs.stanleywind.org`                             | `DEPLOY_PAGES_DOMAIN`      |
+| Cloudflare project | `stanley-docs-github`                              | `DEPLOY_PAGES_CF_PROJECT`  |
 
 Published pages use:
 
 ```text
 https://docs.stanleywind.org/<slug>/
 ```
-
-For the legacy rsync path, set `DEPLOY_PAGES_OWNER=""` to skip remote `chown`.
 
 ## Inputs
 
@@ -179,32 +174,9 @@ After success, report:
 https://docs.stanleywind.org/<slug>/
 ```
 
-### 7. Legacy VPS Deploy
-
-Use this only when the user explicitly asks for the existing VPS/Caddy host.
-
-Resolve this skill directory as `{baseDir}` and run:
-
-```bash
-bash {baseDir}/scripts/deploy-pages.sh pages/<slug> [slug]
-```
-
-The script validates the directory, `index.html`, slug, SSH access, uses `rsync --delete` to publish, and updates the legacy root directory index.
-
-After success, report:
-
-```text
-https://<domain>/<slug>/
-```
-
 ## Deployment Notes
 
 - Cloudflare Pages GitHub integration deploys the whole build output as one immutable deployment.
 - A single changed HTML file still creates a new deployment, but unchanged assets are reused by Cloudflare internally.
 - The root directory page is generated during build from all `pages/*/index.html` folders in the docs repo.
 - Do not manually edit `.deploy/cloudflare-pages`; it is generated output.
-- Remote host must be reachable by SSH for legacy deployment.
-- Remote host must have `rsync` for legacy deployment.
-- Caddy or another static server must serve `DEPLOY_PAGES_ROOT` at `DEPLOY_PAGES_DOMAIN` for legacy deployment.
-- `rsync --delete` removes files on the remote slug path that no longer exist locally; this is expected.
-- If SSH or rsync fails, report the command failure and suggest checking SSH config, remote permissions, and Caddy root.
