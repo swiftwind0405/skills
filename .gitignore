@@ -47,6 +47,7 @@ node_modules/
 *.pid.lock
 .cache/
 .tmp/
+.deploy/
 tmp/
 artifacts/
 output/

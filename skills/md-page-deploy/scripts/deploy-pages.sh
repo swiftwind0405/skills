@@ -10,6 +10,8 @@ Environment:
   DEPLOY_PAGES_ROOT     Remote root, default: /srv/pages
   DEPLOY_PAGES_DOMAIN   Public domain, default: pages.stanleywind.org
   DEPLOY_PAGES_OWNER    Remote owner, default: root:root. Set empty to skip chown.
+  DEPLOY_PAGES_UPDATE_INDEX
+                       Update the root page directory after deploy, default: 1.
 USAGE
 }
 
@@ -25,11 +27,13 @@ fi
 
 local_dir="${1%/}"
 slug="${2:-$(basename "$local_dir")}"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 remote="${DEPLOY_PAGES_REMOTE:-vps-dmit}"
 root="${DEPLOY_PAGES_ROOT:-/srv/pages}"
 domain="${DEPLOY_PAGES_DOMAIN:-pages.stanleywind.org}"
 owner="${DEPLOY_PAGES_OWNER-root:root}"
+update_index="${DEPLOY_PAGES_UPDATE_INDEX:-1}"
 
 if [[ ! -d "$local_dir" ]]; then
   echo "Local directory does not exist: $local_dir" >&2
@@ -57,3 +61,11 @@ if [[ -n "$owner" ]]; then
 fi
 
 echo "Published: https://$domain/$slug/"
+
+if [[ "$update_index" != "0" ]]; then
+  DEPLOY_PAGES_REMOTE="$remote" \
+    DEPLOY_PAGES_ROOT="$root" \
+    DEPLOY_PAGES_DOMAIN="$domain" \
+    DEPLOY_PAGES_OWNER="$owner" \
+    "$script_dir/update-pages-index.sh"
+fi
